@@ -1,9 +1,14 @@
-import { auth } from '../firebaseConfig';
+import { setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
-export const signUpUser = async (email: string, password: string) => {
+export const signUpUser = async (email: string, password: string, role: string) => {
 	try {
 		const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+		await setDoc(doc(db, 'users', userCredential.user.uid), {
+			email: userCredential.user.email,
+			role: role,
+		});
 		return userCredential.user;
 	} catch (error) {
 		console.error('Error signing up:', error.message);
