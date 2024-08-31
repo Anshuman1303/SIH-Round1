@@ -1,14 +1,42 @@
-import { Image, StyleSheet, Platform, ScrollView, View, Text } from "react-native";
+import { StyleSheet, ScrollView, View, Text } from "react-native";
 
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { Colors } from "@/constants/Colors";
 import { TextField } from "react-native-ui-lib";
 const colorScheme = useColorScheme();
 const Color = colorScheme === "dark" ? Colors.dark : Colors.light;
+interface IInvoice {
+  invoiceNumber: number;
+  invoiceDate: Date;
+  invoiceTitle: string;
+  billTo: {
+    name: string;
+    address: string;
+    cityStateZip: string;
+    phone: string;
+  };
+  from: {
+    name: string;
+    address: string;
+    cityStateZip: string;
+    phone: string;
+  };
+  items: (
+    | {
+        description: string;
+        hours: number;
+        rate: number;
+        amount: number;
+      }
+    | {
+        description: string;
+        amount: number;
+      }
+  )[];
+  currency: string;
+  total: number;
+  invoiceType: 1 | 2 | 3 | 4;
+}
 
 export default function HomeScreen() {
   return (

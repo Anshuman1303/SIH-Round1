@@ -4,7 +4,7 @@ import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Button } from "react-native-ui-lib";
@@ -18,7 +18,7 @@ export default function TabLayout() {
       <View style={styles.header}>
         <Button style={styles.loginButton}>
           <FontAwesome6 name="user" style={styles.icon} />
-          Login
+          <Text>Login</Text>
         </Button>
         <View style={styles.buttonGroup}>
           <FontAwesome6.Button name="gear" {...styles.button} />
@@ -36,9 +36,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="explore"
+          name="edit"
           options={{
-            title: "Explore",
+            title: "edit",
             tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "code-slash" : "code-slash-outline"} color={color} />,
           }}
         />
