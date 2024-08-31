@@ -1,13 +1,20 @@
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Fragment } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, IconButton } from "react-native-paper";
+
+const colorScheme = useColorScheme();
+const Color = colorScheme === "dark" ? Colors.dark : Colors.light;
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View style={styles.tabBar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
-
+        const label = options.title;
+        const icon = options.tabBarIcon;
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -30,17 +37,21 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         };
 
         return (
-          <TouchableOpacity
-            key={index}
-            accessibilityRole="button"
-            accessibilityState={isFocused ? { selected: true } : {}}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={{ flex: 1 }}>
-            <Text style={{ color: isFocused ? "#673ab7" : "#222" }}>{label}</Text>
-          </TouchableOpacity>
+          <Fragment key={index}>
+            {!isFocused && (
+              <IconButton
+                key={index}
+                accessibilityRole="button"
+                accessibilityState={isFocused ? { selected: true } : {}}
+                accessibilityLabel={options.tabBarAccessibilityLabel}
+                testID={options.tabBarTestID}
+                onPress={onPress}
+                onLongPress={onLongPress}
+                mode="contained"
+                icon={options.title === "home" ? "file-edit" : options.title === "edit" ? "file-eye" : ""}
+              />
+            )}
+          </Fragment>
         );
       })}
     </View>
@@ -49,9 +60,15 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    justifyContent: "center",
     position: "absolute",
     right: 0,
     margin: 10,
-    width: 100,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 100,
   },
 });

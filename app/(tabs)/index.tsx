@@ -1,62 +1,130 @@
-import { StyleSheet, ScrollView, View, Text } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 
 import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { Colors } from "@/constants/Colors";
-import { TextField } from "react-native-ui-lib";
+import { DateTimePicker, TextField } from "react-native-ui-lib";
+import { BaseSyntheticEvent, useState } from "react";
+import { IInvoice, Items } from "@/utils/types";
+import { Input } from "@/components/inputs/Input";
+import { Button, IconButton, Text, TextInput } from "react-native-paper";
+
 const colorScheme = useColorScheme();
 const Color = colorScheme === "dark" ? Colors.dark : Colors.light;
-interface IInvoice {
-  invoiceNumber: number;
-  invoiceDate: Date;
-  invoiceTitle: string;
-  billTo: {
-    name: string;
-    address: string;
-    cityStateZip: string;
-    phone: string;
-  };
-  from: {
-    name: string;
-    address: string;
-    cityStateZip: string;
-    phone: string;
-  };
-  items: (
-    | {
-        description: string;
-        hours: number;
-        rate: number;
-        amount: number;
-      }
-    | {
-        description: string;
-        amount: number;
-      }
-  )[];
-  currency: string;
-  total: number;
-  invoiceType: 1 | 2 | 3 | 4;
-}
+
+const dataChange = (e: BaseSyntheticEvent) => {
+  console.log(e);
+};
 
 export default function HomeScreen() {
+  const [items, setItems] = useState<Items>([{ description: "", amount: 0 }]);
+  const [invoice, setInvoice] = useState<IInvoice>({
+    invoiceNumber: "",
+    invoiceDate: "",
+    invoiceTitle: "",
+    billToName: "",
+    billToAddressLine1: "",
+    billToAddressLine2: "",
+    billToPhone: "",
+    fromName: "",
+    fromAddressLine1: "",
+    fromAddressLine2: "",
+    fromPhone: "",
+    items: items,
+    currency: "",
+    total: 0,
+  });
+  const styles = StyleSheet.create({
+    container: {
+      gap: 15,
+      padding: 40,
+    },
+    addressContainer: {
+      flexDirection: "row",
+      gap: 15,
+      width: "100%",
+    },
+    address: {
+      gap: 15,
+      flex: 1,
+    },
+    itemContainer: {
+      flexDirection: "row",
+      width: "100%",
+      gap: 15,
+    },
+  });
+  console.log(invoice);
+  console.log(items);
   return (
-    <ScrollView style={styles.container}>
-      <TextField
-        placeholder="Invoice Number"
-        floatOnFocus
-        floatingPlaceholder
-        fieldStyle={styles.textInput}
-        floatingPlaceholderStyle={styles.placeholder}
-        showClearButton
-      />
-      <TextField
-        placeholder="Invoice Date"
-        floatOnFocus
-        floatingPlaceholder
-        fieldStyle={styles.textInput}
-        floatingPlaceholderStyle={styles.placeholder}
-        showClearButton
-      />
+    <ScrollView>
+      <View style={styles.container}>
+        <Input label="Invoice Number" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceNumber" />
+        <Input label="Invoice Date" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceDate" />
+        <Input label="Invoice Title" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceTitle" />
+        <View style={styles.addressContainer}>
+          <View style={styles.address}>
+            <Text variant="headlineMedium">Bill To</Text>
+            <Input label="Name" invoice={invoice} setInvoice={setInvoice} dataKey="billToName" />
+            <Input label="Address Line 1" invoice={invoice} setInvoice={setInvoice} dataKey="billToAddressLine1" />
+            <Input label="Address Line 2" invoice={invoice} setInvoice={setInvoice} dataKey="billToAddressLine2" />
+            <Input label="Phone" invoice={invoice} setInvoice={setInvoice} dataKey="billToPhone" />
+          </View>
+          <View style={styles.address}>
+            <Text variant="headlineMedium">From</Text>
+            <Input label="Name" invoice={invoice} setInvoice={setInvoice} dataKey="billToName" />
+            <Input label="Address Line 1" invoice={invoice} setInvoice={setInvoice} dataKey="billToAddressLine1" />
+            <Input label="Address Line 2" invoice={invoice} setInvoice={setInvoice} dataKey="billToAddressLine2" />
+            <Input label="Phone" invoice={invoice} setInvoice={setInvoice} dataKey="billToPhone" />
+          </View>
+        </View>
+
+        <Text variant="headlineMedium">Items</Text>
+        {items.map((item, index, itemsArray) => {
+          return (
+            <View key={index} style={styles.itemContainer}>
+              <TextInput
+                mode="flat"
+                label="Description"
+                dense={true}
+                onChangeText={(value) =>
+                  setItems(
+                    itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
+                      return itemsArrayIndex === index ? { ...itemsArrayItem, description: value } : itemsArrayItem;
+                    })
+                  )
+                }
+                value={items[index].description}></TextInput>
+              <TextInput
+                mode="flat"
+                label="Amount"
+                dense={true}
+                inputMode="numeric"
+                onChangeText={(value) =>
+                  /^\d*$/.test(value) &&
+                  setItems(
+                    itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
+                      return itemsArrayIndex === index ? { ...itemsArrayItem, amount: value ? parseInt(value) : 0 } : itemsArrayItem;
+                    })
+                  )
+                }
+                value={items[index].amount?.toString()}></TextInput>
+              <IconButton
+                onPress={(e) =>
+                  setItems(
+                    itemsArray.filter((itemsArrayItem, itemsArrayIndex) => {
+                      return itemsArrayIndex !== index;
+                    })
+                  )
+                }
+                icon="minus"
+              />
+            </View>
+          );
+        })}
+        <IconButton onPress={(e) => setItems([...items, { description: "", amount: 0 }])} icon="plus" />
+      </View>
+      {/* <TextField placeholder="Invoice Number" {...inputProps} value={invoice.invoiceNumber} />
+      <DateTimePicker placeholder="Invoice Date" {...inputProps} value={invoice.invoiceDate} />
       <TextField
         placeholder="Invoice Title"
         floatOnFocus
@@ -137,37 +205,7 @@ export default function HomeScreen() {
           />
         </View>
       </View>
+      <Text style={styles.heading}>Items</Text> */}
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-    padding: 20,
-  },
-  textInput: {
-    borderColor: Color.text,
-    borderWidth: 1,
-    padding: 5,
-    fontSize: 10,
-    borderRadius: 3,
-  },
-  placeholder: {
-    paddingHorizontal: 5,
-  },
-  addressContainer: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-    gap: 50,
-    paddingTop: 20,
-  },
-  address: {
-    flex: 1,
-  },
-  heading: {
-    fontSize: 20,
-  },
-});
