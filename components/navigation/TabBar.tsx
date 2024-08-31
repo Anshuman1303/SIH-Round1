@@ -1,9 +1,9 @@
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Animated, Text, TouchableOpacity, View } from "react-native";
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <View style={{ flexDirection: "row", position: "absolute" }}>
+    <View style={styles.tabBar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
@@ -45,3 +45,12 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: "row",
+    position: "absolute",
+    right: 0,
+    margin: 10,
+    width: 100,
+  },
+});

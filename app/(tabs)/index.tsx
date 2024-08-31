@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, ScrollView } from "react-native";
+import { Image, StyleSheet, Platform, ScrollView, View, Text } from "react-native";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -12,48 +12,103 @@ const Color = colorScheme === "dark" ? Colors.dark : Colors.light;
 
 export default function HomeScreen() {
   return (
-    // <ParallaxScrollView
-    //   headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-    //   headerImage={
-    //     <Image
-    //       source={require('@/assets/images/partial-react-logo.png')}
-    //       style={styles.reactLogo}
-    //     />
-    //   }>
-    //   <ThemedView style={styles.titleContainer}>
-    //     <ThemedText type="title">Welcome!</ThemedText>
-    //     <HelloWave />
-    //   </ThemedView>
-    //   <ThemedView style={styles.stepContainer}>
-    //     <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-    //     <ThemedText>
-    //       Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-    //       Press{' '}
-    //       <ThemedText type="defaultSemiBold">
-    //         {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-    //       </ThemedText>{' '}
-    //       to open developer tools.
-    //     </ThemedText>
-    //   </ThemedView>
-    //   <ThemedView style={styles.stepContainer}>
-    //     <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-    //     <ThemedText>
-    //       Tap the Explore tab to learn more about what's included in this starter app.
-    //     </ThemedText>
-    //   </ThemedView>
-    //   <ThemedView style={styles.stepContainer}>
-    //     <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-    //     <ThemedText>
-    //       When you're ready, run{' '}
-    //       <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-    //       <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-    //       <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-    //       <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-    //     </ThemedText>
-    //   </ThemedView>
-    // </ParallaxScrollView>
     <ScrollView style={styles.container}>
-      <TextField placeholder="Invoice Number" floatingPlaceholder></TextField>
+      <TextField
+        placeholder="Invoice Number"
+        floatOnFocus
+        floatingPlaceholder
+        fieldStyle={styles.textInput}
+        floatingPlaceholderStyle={styles.placeholder}
+        showClearButton
+      />
+      <TextField
+        placeholder="Invoice Date"
+        floatOnFocus
+        floatingPlaceholder
+        fieldStyle={styles.textInput}
+        floatingPlaceholderStyle={styles.placeholder}
+        showClearButton
+      />
+      <TextField
+        placeholder="Invoice Title"
+        floatOnFocus
+        floatingPlaceholder
+        fieldStyle={styles.textInput}
+        floatingPlaceholderStyle={styles.placeholder}
+        showClearButton
+      />
+      <View style={styles.addressContainer}>
+        <View style={styles.address}>
+          <Text style={styles.heading}>Bill To</Text>
+          <TextField
+            placeholder="Name"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+          <TextField
+            placeholder="Address Line 1"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+          <TextField
+            placeholder="Address Line 2"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+          <TextField
+            placeholder="Phone"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+        </View>
+        <View style={styles.address}>
+          <Text style={styles.heading}>From</Text>
+          <TextField
+            placeholder="Name"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+          <TextField
+            placeholder="Address Line 1"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+          <TextField
+            placeholder="Address Line 2"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+          <TextField
+            placeholder="Phone"
+            floatOnFocus
+            floatingPlaceholder
+            fieldStyle={styles.textInput}
+            floatingPlaceholderStyle={styles.placeholder}
+            showClearButton
+          />
+        </View>
+      </View>
     </ScrollView>
   );
 }
@@ -65,23 +120,26 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   textInput: {
-    borderColor: "#000",
-    borderWidth: 10,
+    borderColor: Color.text,
+    borderWidth: 1,
+    padding: 5,
+    fontSize: 10,
+    borderRadius: 3,
   },
-  titleContainer: {
+  placeholder: {
+    paddingHorizontal: 5,
+  },
+  addressContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+    width: "100%",
+    justifyContent: "space-between",
+    gap: 50,
+    paddingTop: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  address: {
+    flex: 1,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+  heading: {
+    fontSize: 20,
   },
 });
