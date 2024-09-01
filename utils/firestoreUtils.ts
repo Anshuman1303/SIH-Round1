@@ -1,7 +1,7 @@
 import { db, auth } from "../firebaseConfig";
-import { collection, addDoc, query, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, getDocs, doc, deleteDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { IInvoice, IInvoiceDocument } from "./types";
+import { IInvoice, IInvoiceDocument, IInvoiceDocumentWithId } from "./types";
 
 export const defaultInvoice: IInvoice = {
   invoiceNumber: "",
@@ -30,16 +30,16 @@ export const storeIInvoiceDocument = async (userId: string, invoice: IInvoiceDoc
   }
 };
 
-export const fetchInvoiceDocuments = async (userId: string): Promise<IInvoiceDocument[]> => {
+export const fetchInvoiceDocuments = async (userId: string): Promise<IInvoiceDocumentWithId[]> => {
   try {
     if (userId) {
       const userCollectionRef = collection(db, "users", userId, "IInvoiceDocument");
       const q = query(userCollectionRef);
       const querySnapshot = await getDocs(q);
 
-      const jsonObjects: IInvoiceDocument[] = [];
+      const jsonObjects: IInvoiceDocumentWithId[] = [];
       querySnapshot.forEach((doc) => {
-        jsonObjects.push(doc.data() as IInvoiceDocument);
+        jsonObjects.push({ ...doc.data() as IInvoiceDocument, id: doc.id });
       });
 
       return jsonObjects;
@@ -50,6 +50,17 @@ export const fetchInvoiceDocuments = async (userId: string): Promise<IInvoiceDoc
   } catch (error) {
     console.error("Error retrieving JSON objects:", error.message);
     return [];
+  }
+};
+
+export const deleteInvoiceDocument = async (userId: string, invoiceId: string) => {
+  const invoiceRef = doc(db, "users", userId, "IInvoiceDocument", invoiceId);
+
+  try {
+    await deleteDoc(invoiceRef);
+    console.log(`Invoice with ID ${invoiceId} deleted successfully`);
+  } catch (e) {
+    console.error("Error deleting invoice:", e);
   }
 };
 
@@ -93,8 +104,8 @@ export const saveInvoiceLocally = async (invoice: IInvoice) => {
       const invoiceDocument: IInvoiceDocument = {
         ...baseDocument,
         ...invoice,
-		createdAt: new Date(),
-		updatedAt: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
       }
       const jsonInvoiceDocument = JSON.stringify(invoiceDocument);
       await AsyncStorage.setItem("@invoiceDocuments_local", jsonInvoiceDocument); */
