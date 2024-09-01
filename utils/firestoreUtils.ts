@@ -39,7 +39,7 @@ export const fetchInvoiceDocuments = async (userId: string): Promise<IInvoiceDoc
 
       const jsonObjects: IInvoiceDocumentWithId[] = [];
       querySnapshot.forEach((doc) => {
-        jsonObjects.push({ ...doc.data() as IInvoiceDocument, id: doc.id });
+        jsonObjects.push({ ...(doc.data() as IInvoiceDocument), id: doc.id });
       });
 
       return jsonObjects;

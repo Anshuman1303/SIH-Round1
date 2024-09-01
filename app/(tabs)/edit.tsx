@@ -48,26 +48,29 @@ export default function EditScreen() {
     setInvoice({ ...invoice, invoiceType: invoiceType });
   }, [invoiceType]);
 
-  useEffect(
-    () => {
-      let total = 0;
+  useEffect(() => {
+    if (isInvoiceHour) {
       let tempItems: Items = [];
       items.map((item, index, itemsArray) => {
-        console.log("check1", index);
-        isInvoiceHour &&
-          tempItems.push({
-            ...item,
-            amount: (parseFloat(item.hours) * parseFloat(item.rate)).toString(),
-          });
-        setItems(tempItems);
-        total = total + parseFloat(item.amount ?? "0");
+        console.log(parseFloat(item?.hours) * parseFloat(item?.rate));
+        const amount = (parseFloat(item?.hours) * parseFloat(item?.rate)).toString();
+        tempItems.push({
+          ...item,
+          amount: amount === "NaN" ? "" : amount,
+        });
       });
-      setInvoice({ ...invoice, total: total });
-    },
-    items.map((item, index) => {
-      return item?.hour, item?.rate;
-    })
-  );
+      setItems(tempItems);
+    }
+  }, [...items.map((item, index) => (item?.hour, item?.rate)), items.length]);
+  console.log(invoice);
+  useEffect(() => {
+    let total = 0;
+    items.forEach((item) => {
+      total = total + parseFloat(item.amount ?? "0");
+    });
+    setInvoice({ ...invoice, total: total });
+  }, [...items.map((item, index) => item?.amount), items.length]);
+
   const styles = StyleSheet.create({
     container: {
       gap: 15,
@@ -88,8 +91,6 @@ export default function EditScreen() {
       gap: 15,
     },
   });
-  console.log(invoice);
-  console.log(items);
   return (
     <ScrollView>
       <View style={styles.container}>
