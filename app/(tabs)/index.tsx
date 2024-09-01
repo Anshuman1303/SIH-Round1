@@ -18,7 +18,6 @@ export default function TabTwoScreen() {
     loadData();
   }, []);
   console.log("view", invoice);
-  // return <RenderHTML source={source} />;
   return (
     <ScrollView>
       <RenderHTML source={{ html: invoiceTemplate(invoice) }} />

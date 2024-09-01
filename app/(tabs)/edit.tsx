@@ -12,7 +12,7 @@ function isDecimal(value: string) {
 }
 
 export default function EditScreen() {
-  const invoiceType = parseInt(useLocalSearchParams().invoiceType as string);
+  const invoiceType = parseInt(useLocalSearchParams().invoiceType as string) as 0 | 1 | 2 | 3;
   const { width, height } = Dimensions.get("window");
   const mobile = width <= 768;
   const theme = useTheme();
@@ -42,6 +42,9 @@ export default function EditScreen() {
     };
     saveData();
   }, [invoice, items]);
+  useEffect(() => {
+    setInvoice({ ...invoice, invoiceType: invoiceType });
+  }, [invoiceType]);
   const styles = StyleSheet.create({
     container: {
       gap: 15,
