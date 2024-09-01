@@ -3,7 +3,7 @@ import { defaultInvoice, loadInvoiceFromLocalStorage } from "@/utils/firestoreUt
 import { IInvoice } from "@/utils/types";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { Platform, ScrollView, StyleSheet } from "react-native";
 import RenderHTML from "react-native-render-html";
 
 export default function TabTwoScreen() {
@@ -23,7 +23,7 @@ export default function TabTwoScreen() {
   const html = invoiceTemplate(invoice);
   return (
     <ScrollView style={{ backgroundColor: "white" }} horizontal={true}>
-      <RenderHTML source={{ html: html }} />
+      {Platform.OS === "web" ? <div dangerouslySetInnerHTML={{ __html: html }} /> : <RenderHTML source={{ html: html }} />}
     </ScrollView>
   );
 }
