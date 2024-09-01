@@ -316,7 +316,7 @@ export default function TabLayout() {
               label: "print",
               onPress: (e) => {
                 setFileMenuVisible(false);
-                Platform.OS === "web" ? setTimeout(print, 200) : printToFile();
+                Platform.OS === "web" ? setTimeout(print, 200) : print();
               },
             },
             {

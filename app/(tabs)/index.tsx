@@ -3,9 +3,10 @@ import { defaultInvoice, loadInvoiceFromLocalStorage } from "@/utils/firestoreUt
 import { IInvoice } from "@/utils/types";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Platform, ScrollView, StyleSheet } from "react-native";
+import { Dimensions, Platform, ScrollView, StyleSheet } from "react-native";
 import RenderHTML from "react-native-render-html";
 import WebView from "react-native-webview";
+import Constants from "expo-constants";
 
 export default function TabTwoScreen() {
   const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
@@ -23,12 +24,11 @@ export default function TabTwoScreen() {
   );
   const html = invoiceTemplate(invoice);
   return (
-    <ScrollView style={{ backgroundColor: "white" }} horizontal={true}>
-      {/* {Platform.OS === "web" ? <div dangerouslySetInnerHTML={{ __html: html }} /> : <RenderHTML source={{ html: html }} />} */}
+    <ScrollView style={{ backgroundColor: "white", width: "100%", height: "100%" }}>
       {Platform.OS === "web" ? (
         <div dangerouslySetInnerHTML={{ __html: html }} />
       ) : (
-        <WebView style={{ flex: 1 }} source={{ uri: "https://reactnative.dev/" }} />
+        <WebView style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").width }} source={{ html: html }} />
       )}
     </ScrollView>
   );
