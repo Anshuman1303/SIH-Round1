@@ -32,6 +32,7 @@ export default function EditScreen() {
     };
     loadData();
   }, []);
+
   useEffect(() => {
     const saveData = async () => {
       if (invoice) {

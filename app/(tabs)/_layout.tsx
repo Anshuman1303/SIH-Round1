@@ -1,7 +1,6 @@
 import { router, Tabs } from "expo-router";
-import React, { Fragment, useState } from "react";
-
-import { StyleSheet, Text, View } from "react-native";
+import React, { Fragment, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Divider, FAB, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
@@ -11,7 +10,11 @@ import { signInUser, signUpUser } from "@/utils/authenticationUtils";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "@/contexts/UserContext";
-import { loadInvoiceFromLocalStorage, storeIInvoiceDocument } from "@/utils/firestoreUtils";
+import { defaultInvoice, loadInvoiceFromLocalStorage, storeIInvoiceDocument } from "@/utils/firestoreUtils";
+import { IInvoice, IInvoiceDocument } from "@/utils/types";
+import invoiceTemplate from "@/components/invoiceTemplates";
+import * as Print from "expo-print";
+import { shareAsync } from "expo-sharing";
 
 const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
 registerTranslation("en", en);
@@ -61,9 +64,33 @@ export default function TabLayout() {
   const [invoiceType, setInvoiceType] = useState(0);
   const [authData, setAuthData] = useState({ username: "", password: "" });
   const { user, setUser } = useUser();
+
   useRender(() => {
     router.setParams({ invoiceType: invoiceType });
   }, [invoiceType]);
+
+  const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
+  useEffect(() => {
+    const loadData = async () => {
+      const savedInvoice = await loadInvoiceFromLocalStorage();
+      if (savedInvoice) {
+        setInvoice(savedInvoice);
+      }
+    };
+    loadData();
+  }, [fileMenuVisible]);
+  const html = invoiceTemplate(invoice);
+
+  const printToFile = async () => {
+    // On iOS/android prints the given html. On web prints the HTML from the current page.
+    try {
+      const { uri } = await Print.printToFileAsync({ html });
+      console.log("File has been saved to:", uri);
+      await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
+    } catch {
+      console.log("failed to print");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -182,26 +209,36 @@ export default function TabLayout() {
           icon={fileMenuVisible ? "window-close" : "menu"}
           visible
           actions={[
-            { icon: "floppy", label: "Save", onPress: async (e) => {
-              const save = async () => {
-                const invoice = await loadInvoiceFromLocalStorage();
-                const baseDocument = new Document();
-                const invoiceDocument: IInvoiceDocument = {
-                  ...baseDocument,
-                  ...invoice,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
+            {
+              icon: "floppy",
+              label: "Save",
+              onPress: async (e) => {
+                const save = async () => {
+                  const invoice = await loadInvoiceFromLocalStorage();
+                  const baseDocument = new Document();
+                  const invoiceDocument: IInvoiceDocument = {
+                    ...baseDocument,
+                    ...invoice,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  };
+                  if (!user) {
+                    console.error("No user is logged in");
+                    return;
+                  }
+                  await storeIInvoiceDocument(user.uid, invoiceDocument);
                 };
-                if (!user) {
-                  console.error("No user is logged in");
-                  return;
-                }
-                await storeIInvoiceDocument(user.uid, invoiceDocument);
-              }
-              save();
-            } },
+                save();
+              },
+            },
             { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
-            { icon: "printer", label: "print", onPress: (e) => {} },
+            {
+              icon: "printer",
+              label: "print",
+              onPress: (e) => {
+                printToFile();
+              },
+            },
             { icon: "share-variant", label: "share", onPress: (e) => {} },
           ]}
           onStateChange={() => setFileMenuVisible(!fileMenuVisible)}
