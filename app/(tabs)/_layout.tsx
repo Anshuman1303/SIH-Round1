@@ -1,6 +1,6 @@
 import { router, Tabs, usePathname, useRouter } from "expo-router";
 import React, { Fragment, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Divider, FAB, IconButton, Menu, Modal, Portal, Text, TextInput, useTheme } from "react-native-paper";
@@ -10,7 +10,13 @@ import { signInUser, signUpUser } from "@/utils/authenticationUtils";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "@/contexts/UserContext";
-import { defaultInvoice, fetchInvoiceDocuments, loadInvoiceFromLocalStorage, storeIInvoiceDocument, deleteInvoiceDocument } from "@/utils/firestoreUtils";
+import {
+  defaultInvoice,
+  fetchInvoiceDocuments,
+  loadInvoiceFromLocalStorage,
+  storeIInvoiceDocument,
+  deleteInvoiceDocument,
+} from "@/utils/firestoreUtils";
 import { IInvoice, IInvoiceDocument, IInvoiceDocumentWithId } from "@/utils/types";
 import invoiceTemplate from "@/components/invoiceTemplates";
 import * as Print from "expo-print";
@@ -95,20 +101,18 @@ export default function TabLayout() {
   const [selectedPrinter, setSelectedPrinter] = useState();
 
   const print = async () => {
-    // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
-      html,
-      printerUrl: selectedPrinter?.url, // iOS only
+      html: html,
+      printerUrl: selectedPrinter?.url,
     });
   };
 
   const selectPrinter = async () => {
-    const printer = await Print.selectPrinterAsync(); // iOS only
+    const printer = await Print.selectPrinterAsync();
     setSelectedPrinter(printer);
   };
 
   const printToFile = async () => {
-    // On iOS/android prints the given html. On web prints the HTML from the current page.
     try {
       const { uri } = await Print.printToFileAsync({ html });
       console.log("File has been saved to:", uri);
@@ -252,17 +256,22 @@ export default function TabLayout() {
                 <Text variant="headlineMedium">
                   {invoiceDoc.invoiceTitle} #{invoiceDoc.invoiceNumber}
                 </Text>
-                <IconButton icon="delete" iconColor={theme.colors.error} mode="contained" onPress={() => {
-                  const deleteInvoice = async () => {
-                    if (!user) {
-                      console.error("No user is logged in");
-                      return;
-                    }
-                    await deleteInvoiceDocument(user.uid, invoiceDoc.id);
-                    setInvoiceList(await fetchInvoiceDocuments(user.uid));
-                  }
-                  deleteInvoice();
-                }} />
+                <IconButton
+                  icon={"delete"}
+                  iconColor={theme.colors.error}
+                  mode="contained"
+                  onPress={() => {
+                    const deleteInvoice = async () => {
+                      if (!user) {
+                        console.error("No user is logged in");
+                        return;
+                      }
+                      await deleteInvoiceDocument(user.uid, invoiceDoc.id);
+                      setInvoiceList(await fetchInvoiceDocuments(user.uid));
+                    };
+                    deleteInvoice();
+                  }}
+                />
               </View>
             );
           })}
@@ -296,19 +305,21 @@ export default function TabLayout() {
                 save();
               },
             },
-            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => { } },
+            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
             {
               icon: "printer",
               label: "print",
               onPress: (e) => {
-                print();
+                setFileMenuVisible(false);
+                Platform.OS === "web" ? setTimeout(print, 200) : printToFile();
               },
             },
             {
               icon: "share-variant",
               label: "share",
               onPress: (e) => {
-                printToFile();
+                setFileMenuVisible(false);
+                Platform.OS === "web" ? setTimeout(printToFile, 200) : printToFile();
               },
             },
           ]}
