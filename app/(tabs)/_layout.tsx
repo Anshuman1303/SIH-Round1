@@ -246,7 +246,7 @@ export default function TabLayout() {
           }}>
           {invoiceList.map((invoiceDoc, index) => {
             return (
-              <View style={styles.invoiceListItem}>
+              <View style={styles.invoiceListItem} key={index}>
                 <Text variant="headlineMedium">
                   {invoiceDoc.invoiceTitle} #{invoiceDoc.invoiceNumber}
                 </Text>
