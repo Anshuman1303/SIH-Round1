@@ -11,6 +11,7 @@ import { signInUser, signUpUser } from "@/utils/authenticationUtils";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "@/contexts/UserContext";
+import { loadInvoiceFromLocalStorage, storeIInvoiceDocument } from "@/utils/firestoreUtils";
 
 const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
 registerTranslation("en", en);
@@ -181,7 +182,24 @@ export default function TabLayout() {
           icon={fileMenuVisible ? "window-close" : "menu"}
           visible
           actions={[
-            { icon: "floppy", label: "Save", onPress: (e) => {} },
+            { icon: "floppy", label: "Save", onPress: async (e) => {
+              const save = async () => {
+                const invoice = await loadInvoiceFromLocalStorage();
+                const baseDocument = new Document();
+                const invoiceDocument: IInvoiceDocument = {
+                  ...baseDocument,
+                  ...invoice,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                };
+                if (!user) {
+                  console.error("No user is logged in");
+                  return;
+                }
+                await storeIInvoiceDocument(user.uid, invoiceDocument);
+              }
+              save();
+            } },
             { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
             { icon: "printer", label: "print", onPress: (e) => {} },
             { icon: "share-variant", label: "share", onPress: (e) => {} },
