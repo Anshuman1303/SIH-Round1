@@ -1,7 +1,7 @@
 import { IInvoice } from "@/utils/types";
 
 export function invoice1(invoice: IInvoice) {
-  const template = `<html>
+    const template = `<html>
     <body>
         <table style="border-collapse: collapse; width: 629px">
             <colgroup>
@@ -1209,7 +1209,7 @@ export function invoice1(invoice: IInvoice) {
                     </td>
                 </tr>
                 ${invoice.items?.map(
-                  (item) => `
+                    (item) => `
                 <tr>
                     <td
                         id="cell_A16"
@@ -1831,7 +1831,7 @@ export function invoice1(invoice: IInvoice) {
 `;
 }
 export function invoice2(invoice: IInvoice) {
-  const template = `<html>
+    const template = `<html>
     <body>
         <table
             cellspacing="0"
@@ -3221,7 +3221,7 @@ export function invoice2(invoice: IInvoice) {
                     </td>
                 </tr>
                 ${invoice.items?.map(
-                  (item) => `
+                    (item) => `
 
                 <tr>
                     <td
@@ -3993,7 +3993,7 @@ export function invoice2(invoice: IInvoice) {
 `;
 }
 export function companyInvoice1(invoice: IInvoice) {
-  const template = `<html>
+    const template = `<html>
     <body>
         <table
             cellspacing="0"
@@ -5173,7 +5173,7 @@ export function companyInvoice1(invoice: IInvoice) {
                     </td>
                 </tr>
                 ${invoice.items?.map(
-                  (item) => `
+                    (item) => `
                 <tr>
                     <td
                         id="cell_A18"
@@ -5579,71 +5579,7 @@ export function companyInvoice1(invoice: IInvoice) {
                         0.00
                     </td>
                 </tr>
-                <tr>
-                    <td
-                        id="cell_A33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_B33"
-                        colspan="3"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: small;
-                            font-family: 'Trebuchet MS';
-                            text-align: left;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_E33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_F33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: bottom;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: small;
-                            font-family: 'Trebuchet MS';
-                            border-bottom: 1px solid rgb(0, 0, 0);
-                        ">
-                        Other
-                    </td>
-                    <td
-                        id="cell_G33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: small;
-                            font-family: 'Trebuchet MS';
-                            text-align: right;
-                            border-bottom: 1px solid rgb(0, 0, 0);
-                        ">
-                        0.00
-                    </td>
-                </tr>
+                
                 <tr>
                     <td
                         id="cell_A34"
@@ -5832,7 +5768,7 @@ export function companyInvoice1(invoice: IInvoice) {
 `;
 }
 export function companyInvoice2(invoice: IInvoice) {
-  const template = `<html>
+    const template = `<html>
     <body>
         <table
             cellspacing="0"
@@ -7466,7 +7402,7 @@ export function companyInvoice2(invoice: IInvoice) {
                     </td>
                 </tr>
                 ${invoice.items?.map(
-                  (item) => `
+                    (item) => `
                 <tr>
                     <td
                         id="cell_A18"
@@ -8190,104 +8126,7 @@ export function companyInvoice2(invoice: IInvoice) {
                         &nbsp;
                     </td>
                 </tr>
-                <tr>
-                    <td
-                        id="cell_A33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_B33"
-                        colspan="3"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: small;
-                            font-family: 'Trebuchet MS';
-                            text-align: left;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_E33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_F33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: bottom;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: small;
-                            font-family: 'Trebuchet MS';
-                            border-bottom: 1px solid rgb(0, 0, 0);
-                        ">
-                        Other
-                    </td>
-                    <td
-                        id="cell_G33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: small;
-                            font-family: 'Trebuchet MS';
-                            text-align: right;
-                            border-bottom: 1px solid rgb(0, 0, 0);
-                        ">
-                        0.00
-                    </td>
-                    <td
-                        id="cell_H33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_I33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                    <td
-                        id="cell_J33"
-                        style="
-                            padding: 2px 2px 1px;
-                            vertical-align: top;
-                            font-size: small;
-                            font-family: Verdana, Arial, Helvetica, sans-serif;
-                            text-align: right;
-                        ">
-                        &nbsp;
-                    </td>
-                </tr>
+                
                 <tr>
                     <td
                         id="cell_A34"
