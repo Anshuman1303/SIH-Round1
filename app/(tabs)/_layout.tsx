@@ -55,6 +55,7 @@ export default function TabLayout() {
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [invoiceType, setInvoiceType] = useState(0);
   const [authData, setAuthData] = useState({ username: "", password: "" });
+
   useRender(() => {
     router.setParams({ invoiceType: invoiceType });
   }, [invoiceType]);
