@@ -5,6 +5,7 @@ import { Input } from "@/components/inputs/Input";
 import { Button, Divider, IconButton, Text, TextInput, useTheme } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { DatePickerInput } from "react-native-paper-dates";
+import { defaultInvoice, saveInvoiceLocally, loadInvoiceFromLocalStorage } from "@/utils/firestoreUtils";
 
 function isDecimal(value: string) {
   return /^\d*(\.\d*)?$/.test(value);
@@ -16,28 +17,28 @@ export default function EditScreen() {
   const mobile = width <= 768;
   const theme = useTheme();
   const isInvoiceHour = invoiceType === 1 || invoiceType === 3;
-  const isInvoiceTax = invoiceType === 2 || invoiceType === 3;
   const newItem = isInvoiceHour ? { description: "", hours: undefined, rate: undefined, amount: "" } : { description: "", amount: "" };
   const [items, setItems] = useState<Items>([{ ...newItem }]);
-  const [invoice, setInvoice] = useState<IInvoice>({
-    invoiceNumber: "",
-    invoiceDate: undefined,
-    invoiceTitle: "",
-    billToName: "",
-    billToAddressLine1: "",
-    billToAddressLine2: "",
-    billToPhone: "",
-    fromName: "",
-    fromAddressLine1: "",
-    fromAddressLine2: "",
-    fromPhone: "",
-    items: items,
-    currency: "",
-    total: 0,
-    tax: 0,
-    invoiceType: invoiceType as 0 | 1 | 2 | 3,
-  });
-
+  const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
+  useEffect(() => {
+    const loadData = async () => {
+      const savedInvoice = await loadInvoiceFromLocalStorage();
+      if (savedInvoice) {
+        setInvoice(savedInvoice);
+        console.log("Invoice loaded from local storage");
+      }
+    };
+    loadData();
+  }, []);
+  useEffect(() => {
+    const saveData = async () => {
+      if (invoice) {
+        await saveInvoiceLocally(invoice);
+        console.log("Invoice saved locally");
+      }
+    };
+    saveData();
+  }, [invoice]);
   const styles = StyleSheet.create({
     container: {
       gap: 15,
@@ -85,10 +86,10 @@ export default function EditScreen() {
           </View>
           <View style={styles.address}>
             <Text variant="headlineMedium">From</Text>
-            <Input label="Name" invoice={invoice} setInvoice={setInvoice} dataKey="billToName" />
-            <Input label="Address Line 1" invoice={invoice} setInvoice={setInvoice} dataKey="billToAddressLine1" />
-            <Input label="Address Line 2" invoice={invoice} setInvoice={setInvoice} dataKey="billToAddressLine2" />
-            <Input label="Phone" invoice={invoice} setInvoice={setInvoice} dataKey="billToPhone" />
+            <Input label="Name" invoice={invoice} setInvoice={setInvoice} dataKey="fromName" />
+            <Input label="Address Line 1" invoice={invoice} setInvoice={setInvoice} dataKey="fromAddressLine1" />
+            <Input label="Address Line 2" invoice={invoice} setInvoice={setInvoice} dataKey="fromAddressLine2" />
+            <Input label="Phone" invoice={invoice} setInvoice={setInvoice} dataKey="fromPhone" />
           </View>
         </View>
 
@@ -104,7 +105,12 @@ export default function EditScreen() {
                 onChangeText={(value) =>
                   setItems(
                     itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
-                      return itemsArrayIndex === index ? { ...itemsArrayItem, description: value } : itemsArrayItem;
+                      return itemsArrayIndex === index
+                        ? {
+                            ...itemsArrayItem,
+                            description: value,
+                          }
+                        : itemsArrayItem;
                     })
                   )
                 }
@@ -122,7 +128,12 @@ export default function EditScreen() {
                       isDecimal(value) &&
                       setItems(
                         itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
-                          return itemsArrayIndex === index ? { ...itemsArrayItem, hours: value ?? "" } : itemsArrayItem;
+                          return itemsArrayIndex === index
+                            ? {
+                                ...itemsArrayItem,
+                                hours: value ?? "",
+                              }
+                            : itemsArrayItem;
                         })
                       )
                     }
@@ -138,7 +149,12 @@ export default function EditScreen() {
                       isDecimal(value) &&
                       setItems(
                         itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
-                          return itemsArrayIndex === index ? { ...itemsArrayItem, rate: value ?? "" } : itemsArrayItem;
+                          return itemsArrayIndex === index
+                            ? {
+                                ...itemsArrayItem,
+                                rate: value ?? "",
+                              }
+                            : itemsArrayItem;
                         })
                       )
                     }
@@ -156,7 +172,12 @@ export default function EditScreen() {
                   isDecimal(value) &&
                   setItems(
                     itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
-                      return itemsArrayIndex === index ? { ...itemsArrayItem, amount: value ?? "" } : itemsArrayItem;
+                      return itemsArrayIndex === index
+                        ? {
+                            ...itemsArrayItem,
+                            amount: value ?? "",
+                          }
+                        : itemsArrayItem;
                     })
                   )
                 }
@@ -185,17 +206,6 @@ export default function EditScreen() {
           textColor={theme.colors.onSurfaceVariant}>
           Add Item
         </Button>
-        {isInvoiceTax && (
-          <TextInput
-            mode="flat"
-            label="Tax"
-            dense={true}
-            style={{ flex: 1 }}
-            inputMode="numeric"
-            onChangeText={(value) => isDecimal(value) && setInvoice({ ...invoice, tax: value ?? 0 })}
-            value={invoice.tax}
-          />
-        )}
       </View>
     </ScrollView>
   );
