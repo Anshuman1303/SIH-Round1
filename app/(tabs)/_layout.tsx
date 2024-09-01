@@ -222,18 +222,20 @@ export default function TabLayout() {
               }}>
               {user ? "Logout" : "Login"}
             </Button>
-            <Button
-              mode="contained-tonal"
-              style={styles.authModalButton}
-              onPress={async () => {
-                try {
-                  await signUpUser(authData.username, authData.password, "admin");
-                } catch (error) {
-                  console.error(error);
-                }
-              }}>
-              Sign Up
-            </Button>
+            {!user && (
+              <Button
+                mode="contained-tonal"
+                style={styles.authModalButton}
+                onPress={async () => {
+                  try {
+                    await signUpUser(authData.username, authData.password, "admin");
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }}>
+                Sign Up
+              </Button>
+            )}
           </View>
         </Modal>
       </Portal>
