@@ -5,10 +5,17 @@ import { Input } from "@/components/inputs/Input";
 import { Button, Divider, IconButton, Text, TextInput, useTheme } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { DatePickerInput } from "react-native-paper-dates";
+
+function isDecimal(value: string) {
+  return /^\d*(\.\d*)?$/.test(value);
+}
+
 export default function EditScreen() {
   const invoiceType = parseInt(useLocalSearchParams().invoiceType as string);
   const theme = useTheme();
-  const [items, setItems] = useState<Items>([{ description: "", amount: "" }]);
+  const isInvoiceHour = invoiceType === 1 || invoiceType === 3;
+  const newItem = isInvoiceHour ? { description: "", hours: undefined, rate: undefined, amount: "" } : { description: "", amount: "" };
+  const [items, setItems] = useState<Items>([{ ...newItem }]);
   const [invoice, setInvoice] = useState<IInvoice>({
     invoiceNumber: "",
     invoiceDate: undefined,
@@ -95,7 +102,44 @@ export default function EditScreen() {
                     })
                   )
                 }
-                value={items[index].description}></TextInput>
+                value={items[index].description}
+              />
+              {isInvoiceHour && (
+                <>
+                  <TextInput
+                    mode="flat"
+                    label="Hours"
+                    dense={true}
+                    style={{ flex: 1 }}
+                    inputMode="numeric"
+                    onChangeText={(value) =>
+                      isDecimal(value) &&
+                      setItems(
+                        itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
+                          return itemsArrayIndex === index ? { ...itemsArrayItem, hours: value ?? "" } : itemsArrayItem;
+                        })
+                      )
+                    }
+                    value={items[index].hours ?? ""}
+                  />
+                  <TextInput
+                    mode="flat"
+                    label="Rate"
+                    dense={true}
+                    style={{ flex: 1 }}
+                    inputMode="numeric"
+                    onChangeText={(value) =>
+                      isDecimal(value) &&
+                      setItems(
+                        itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
+                          return itemsArrayIndex === index ? { ...itemsArrayItem, rate: value ?? "" } : itemsArrayItem;
+                        })
+                      )
+                    }
+                    value={items[index].rate ?? ""}
+                  />
+                </>
+              )}
               <TextInput
                 mode="flat"
                 label="Amount"
@@ -103,14 +147,15 @@ export default function EditScreen() {
                 style={{ flex: 1 }}
                 inputMode="numeric"
                 onChangeText={(value) =>
-                  /^\d*(\.\d*)?$/.test(value) &&
+                  isDecimal(value) &&
                   setItems(
                     itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                       return itemsArrayIndex === index ? { ...itemsArrayItem, amount: value ?? "" } : itemsArrayItem;
                     })
                   )
                 }
-                value={items[index].amount ?? ""}></TextInput>
+                value={items[index].amount ?? ""}
+              />
               <IconButton
                 onPress={(e) =>
                   setItems(
@@ -127,7 +172,7 @@ export default function EditScreen() {
           );
         })}
         <Button
-          onPress={(e) => setItems([...items, { description: "", amount: "" }])}
+          onPress={(e) => setItems([...items, { ...newItem }])}
           mode="contained-tonal"
           icon="plus"
           buttonColor={theme.colors.surfaceVariant}

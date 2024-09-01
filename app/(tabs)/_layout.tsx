@@ -4,7 +4,7 @@ import React, { Fragment, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Divider, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
+import { Button, Divider, FAB, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
 import useRender from "@/hooks/useRender";
 import { en, registerTranslation } from "react-native-paper-dates";
 
@@ -51,6 +51,7 @@ export default function TabLayout() {
   });
 
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
+  const [fileMenuVisible, setFileMenuVisible] = useState(false);
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [invoiceType, setInvoiceType] = useState(0);
   const [authData, setAuthData] = useState({ username: "", password: "" });
@@ -140,6 +141,20 @@ export default function TabLayout() {
             </Button>
           </View>
         </Modal>
+      </Portal>
+      <Portal>
+        <FAB.Group
+          open={fileMenuVisible}
+          icon={fileMenuVisible ? "window-close" : "menu"}
+          visible
+          actions={[
+            { icon: "floppy", label: "Save", onPress: (e) => {} },
+            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
+            { icon: "printer", label: "print", onPress: (e) => {} },
+            { icon: "share-variant", label: "share", onPress: (e) => {} },
+          ]}
+          onStateChange={() => setFileMenuVisible(!fileMenuVisible)}
+        />
       </Portal>
     </SafeAreaView>
   );
