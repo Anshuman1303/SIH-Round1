@@ -12,7 +12,6 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "@/contexts/UserContext";
 
-
 const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
 registerTranslation("en", en);
 export default function TabLayout() {
@@ -140,33 +139,37 @@ export default function TabLayout() {
             secureTextEntry
           />
           <View style={styles.authModalButtonGroup}>
-            <Button mode="contained" style={styles.authModalButton} onPress={async () => {
-              if (user) {
-                await signOut(auth);
-                setUser(null);
-                setAuthModalVisible(false);
-                return;
-              }
-              try {
-                const userSignedIn = await signInUser(authData.username, authData.password);
-                setUser(userSignedIn);
-                setAuthData({ username: "", password: "" });
-                setAuthModalVisible(false);
-              }
-              catch (error) {
-                console.error(error);
-              }
-            }}>
+            <Button
+              mode="contained"
+              style={styles.authModalButton}
+              onPress={async () => {
+                if (user) {
+                  await signOut(auth);
+                  setUser(null);
+                  setAuthModalVisible(false);
+                  return;
+                }
+                try {
+                  const userSignedIn = await signInUser(authData.username, authData.password);
+                  setUser(userSignedIn);
+                  setAuthData({ username: "", password: "" });
+                  setAuthModalVisible(false);
+                } catch (error) {
+                  console.error(error);
+                }
+              }}>
               {user ? "Logout" : "Login"}
             </Button>
-            <Button mode="contained-tonal" style={styles.authModalButton} onPress={async () => {
-              try {
-                await signUpUser(authData.username, authData.password, "admin");
-              }
-              catch (error) {
-                console.error(error);
-              }
-            }}>
+            <Button
+              mode="contained-tonal"
+              style={styles.authModalButton}
+              onPress={async () => {
+                try {
+                  await signUpUser(authData.username, authData.password, "admin");
+                } catch (error) {
+                  console.error(error);
+                }
+              }}>
               Sign Up
             </Button>
           </View>
