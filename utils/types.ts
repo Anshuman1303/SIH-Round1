@@ -13,7 +13,7 @@ export interface IInvoice {
   items?: Items;
   currency?: string;
   total?: number;
-  tax?: number;
+  tax?: string;
   invoiceType: 0 | 1 | 2 | 3;
 }
 
