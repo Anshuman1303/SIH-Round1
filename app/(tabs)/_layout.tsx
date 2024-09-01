@@ -16,11 +16,13 @@ import {
   loadInvoiceFromLocalStorage,
   storeIInvoiceDocument,
   deleteInvoiceDocument,
+  saveInvoiceLocally,
 } from "@/utils/firestoreUtils";
 import { IInvoice, IInvoiceDocument, IInvoiceDocumentWithId } from "@/utils/types";
 import invoiceTemplate from "@/components/invoiceTemplates";
 import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
+import { useInvoice } from '@/contexts/InvoiceContext';
 
 const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
 registerTranslation("en", en);
@@ -87,8 +89,8 @@ export default function TabLayout() {
     router.setParams({ invoiceType: invoiceType });
   }, [invoiceType]);
 
-  const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
-
+  // const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
+  const { invoice, setInvoice } = useInvoice();
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
@@ -258,7 +260,15 @@ export default function TabLayout() {
           {invoiceList.map((invoiceDoc, index) => {
             return (
               <View style={styles.invoiceListItem} key={index}>
-                <Text variant="headlineMedium">
+                <Text variant="headlineMedium" onPress={() => {
+                  const loadInvoice = async () => {
+                    setInvoiceListModalVisible(false);
+                    // await saveInvoiceLocally(invoiceDoc);
+                    // console.log(invoiceDoc);
+                    setInvoice(invoiceDoc);
+                  }
+                  loadInvoice();
+                }}>
                   {invoiceDoc.invoiceTitle} #{invoiceDoc.invoiceNumber}
                 </Text>
                 <IconButton
@@ -310,7 +320,7 @@ export default function TabLayout() {
                 save();
               },
             },
-            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
+            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => { } },
             {
               icon: "printer",
               label: "print",
