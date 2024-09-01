@@ -22,7 +22,7 @@ export default function TabTwoScreen() {
   );
   const html = invoiceTemplate(invoice);
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }} horizontal={true}>
       <RenderHTML source={{ html: html }} />
     </ScrollView>
   );

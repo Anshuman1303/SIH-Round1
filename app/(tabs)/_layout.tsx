@@ -1,4 +1,4 @@
-import { router, Tabs } from "expo-router";
+import { router, Tabs, usePathname, useRouter } from "expo-router";
 import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
@@ -80,6 +80,20 @@ export default function TabLayout() {
     loadData();
   }, [fileMenuVisible]);
   const html = invoiceTemplate(invoice);
+  const [selectedPrinter, setSelectedPrinter] = useState();
+
+  const print = async () => {
+    // On iOS/android prints the given html. On web prints the HTML from the current page.
+    await Print.printAsync({
+      html,
+      printerUrl: selectedPrinter?.url, // iOS only
+    });
+  };
+
+  const selectPrinter = async () => {
+    const printer = await Print.selectPrinterAsync(); // iOS only
+    setSelectedPrinter(printer);
+  };
 
   const printToFile = async () => {
     // On iOS/android prints the given html. On web prints the HTML from the current page.
@@ -91,7 +105,7 @@ export default function TabLayout() {
       console.log("failed to print");
     }
   };
-
+  const pathname = usePathname();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -99,45 +113,47 @@ export default function TabLayout() {
           {user ? user.email : "Login"}
         </Button>
         <View style={styles.buttonGroup}>
-          <Menu
-            visible={settingsMenuVisible}
-            mode="elevated"
-            onDismiss={() => setSettingsMenuVisible(false)}
-            anchorPosition="bottom"
-            contentStyle={{ padding: 0 }}
-            anchor={<IconButton mode="contained-tonal" icon="cog" onPress={() => setSettingsMenuVisible(!settingsMenuVisible)} />}>
-            {invoiceTypes.map((invoiceType, index) => {
-              return (
-                <Fragment key={index}>
-                  {index !== 0 && <Divider />}
-                  <Menu.Item
-                    title={invoiceType}
-                    onPress={() => {
-                      setInvoiceType(index);
-                      setSettingsMenuVisible(false);
-                    }}
-                  />
-                </Fragment>
-              );
-            })}
-          </Menu>
+          {pathname === "/edit" && (
+            <Menu
+              visible={settingsMenuVisible}
+              mode="elevated"
+              onDismiss={() => setSettingsMenuVisible(false)}
+              anchorPosition="bottom"
+              contentStyle={{ padding: 0 }}
+              anchor={<IconButton mode="contained-tonal" icon="cog" onPress={() => setSettingsMenuVisible(!settingsMenuVisible)} />}>
+              {invoiceTypes.map((invoiceType, index) => {
+                return (
+                  <Fragment key={index}>
+                    {index !== 0 && <Divider />}
+                    <Menu.Item
+                      title={invoiceType}
+                      onPress={() => {
+                        setInvoiceType(index);
+                        setSettingsMenuVisible(false);
+                      }}
+                    />
+                  </Fragment>
+                );
+              })}
+            </Menu>
+          )}
           <IconButton mode="contained-tonal" icon="folder" />
           <IconButton mode="contained-tonal" icon="cloud-download" />
           <IconButton mode="contained-tonal" icon="file-plus" />
         </View>
       </View>
-      <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "index",
-          }}
-          initialParams={{ invoiceType: invoiceType }}
-        />
+      <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />} initialRouteName="edit">
         <Tabs.Screen
           name="edit"
           options={{
             title: "edit",
+          }}
+          initialParams={{ invoiceType: invoiceType }}
+        />
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "index",
           }}
           initialParams={{ invoiceType: invoiceType }}
         />
@@ -204,6 +220,11 @@ export default function TabLayout() {
         </Modal>
       </Portal>
       <Portal>
+        <Modal visible={false}>
+          <View></View>
+        </Modal>
+      </Portal>
+      <Portal>
         <FAB.Group
           open={fileMenuVisible}
           icon={fileMenuVisible ? "window-close" : "menu"}
@@ -236,10 +257,16 @@ export default function TabLayout() {
               icon: "printer",
               label: "print",
               onPress: (e) => {
+                print();
+              },
+            },
+            {
+              icon: "share-variant",
+              label: "share",
+              onPress: (e) => {
                 printToFile();
               },
             },
-            { icon: "share-variant", label: "share", onPress: (e) => {} },
           ]}
           onStateChange={() => setFileMenuVisible(!fileMenuVisible)}
         />

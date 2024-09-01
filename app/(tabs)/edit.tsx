@@ -43,9 +43,30 @@ export default function EditScreen() {
     };
     saveData();
   }, [invoice, items]);
+
   useEffect(() => {
     setInvoice({ ...invoice, invoiceType: invoiceType });
   }, [invoiceType]);
+
+  useEffect(() => {
+    let total = 0;
+    items.map((item, index, itemsArray) => {
+      if (item.hour && item.rate) {
+        setItems(
+          itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
+            return itemsArrayIndex === index
+              ? {
+                  ...itemsArrayItem,
+                  amount: (parseFloat(item.hour) * parseFloat(item.rate)).toString(),
+                }
+              : itemsArrayItem;
+          })
+        );
+      }
+      total = total + parseFloat(item.amount ?? "0");
+    });
+    setInvoice({ ...invoice, total: total });
+  }, [items]);
   const styles = StyleSheet.create({
     container: {
       gap: 15,
@@ -169,27 +190,29 @@ export default function EditScreen() {
                   />
                 </>
               )}
-              <TextInput
-                mode="flat"
-                label="Amount"
-                dense={true}
-                style={{ flex: 1 }}
-                inputMode="numeric"
-                onChangeText={(value) =>
-                  isDecimal(value) &&
-                  setItems(
-                    itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
-                      return itemsArrayIndex === index
-                        ? {
-                            ...itemsArrayItem,
-                            amount: value ?? "",
-                          }
-                        : itemsArrayItem;
-                    })
-                  )
-                }
-                value={items[index].amount ?? ""}
-              />
+              {!isInvoiceHour && (
+                <TextInput
+                  mode="flat"
+                  label="Amount"
+                  dense={true}
+                  style={{ flex: 1 }}
+                  inputMode="numeric"
+                  onChangeText={(value) =>
+                    isDecimal(value) &&
+                    setItems(
+                      itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
+                        return itemsArrayIndex === index
+                          ? {
+                              ...itemsArrayItem,
+                              amount: value ?? "",
+                            }
+                          : itemsArrayItem;
+                      })
+                    )
+                  }
+                  value={items[index].amount ?? ""}
+                />
+              )}
               <IconButton
                 onPress={(e) =>
                   setItems(
