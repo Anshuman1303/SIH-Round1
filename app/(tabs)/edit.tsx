@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, View, Dimensions } from "react-native";
-import { BaseSyntheticEvent, Fragment, useState } from "react";
+import { BaseSyntheticEvent, Fragment, useEffect, useState } from "react";
 import { IInvoice, Items } from "@/utils/types";
 import { Input } from "@/components/inputs/Input";
 import { Button, Divider, IconButton, Text, TextInput, useTheme } from "react-native-paper";
@@ -61,6 +61,7 @@ export default function EditScreen() {
     <ScrollView>
       <View style={styles.container}>
         <Input label="Invoice Number" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceNumber" />
+
         <DatePickerInput
           locale="en"
           label="Invoice Date"

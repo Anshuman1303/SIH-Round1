@@ -1,6 +1,16 @@
 import { IInvoice } from "@/utils/types";
+import RNHTMLtoPDF from "react-native-html-to-pdf";
 
-export function invoice1(invoice: IInvoice) {
+async function createPDF(template: string) {
+  let options = {
+    html: template,
+    fileName: "test",
+    directory: "Documents",
+  };
+  let file = await RNHTMLtoPDF.convert(options);
+  alert(file.filePath);
+}
+export async function invoice1(invoice: IInvoice) {
   const template = `<html>
     <body>
         <table style="border-collapse: collapse; width: 629px">
@@ -1829,6 +1839,7 @@ export function invoice1(invoice: IInvoice) {
     </body>
 </html>
 `;
+  await createPDF(template);
 }
 export function invoice2(invoice: IInvoice) {
   const template = `<html>
