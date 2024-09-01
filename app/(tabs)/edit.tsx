@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, ScrollView, View, Dimensions } from "react-native";
 import { BaseSyntheticEvent, Fragment, useState } from "react";
 import { IInvoice, Items } from "@/utils/types";
 import { Input } from "@/components/inputs/Input";
@@ -12,6 +12,8 @@ function isDecimal(value: string) {
 
 export default function EditScreen() {
   const invoiceType = parseInt(useLocalSearchParams().invoiceType as string);
+  const { width, height } = Dimensions.get("window");
+  const mobile = width <= 768;
   const theme = useTheme();
   const isInvoiceHour = invoiceType === 1 || invoiceType === 3;
   const newItem = isInvoiceHour ? { description: "", hours: undefined, rate: undefined, amount: "" } : { description: "", amount: "" };
@@ -48,7 +50,7 @@ export default function EditScreen() {
       flex: 1,
     },
     itemContainer: {
-      flexDirection: "row",
+      flexDirection: mobile ? "column" : "row",
       width: "100%",
       gap: 15,
     },
