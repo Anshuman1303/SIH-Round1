@@ -19,6 +19,7 @@ export const defaultInvoice: IInvoice = {
   currency: "",
   total: 0,
   invoiceType: 2,
+  tax: "",
 };
 export const storeIInvoiceDocument = async (userId: string, invoice: IInvoiceDocument) => {
   try {

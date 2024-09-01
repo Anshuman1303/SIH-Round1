@@ -48,25 +48,26 @@ export default function EditScreen() {
     setInvoice({ ...invoice, invoiceType: invoiceType });
   }, [invoiceType]);
 
-  useEffect(() => {
-    let total = 0;
-    items.map((item, index, itemsArray) => {
-      if (item.hour && item.rate) {
-        setItems(
-          itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
-            return itemsArrayIndex === index
-              ? {
-                  ...itemsArrayItem,
-                  amount: (parseFloat(item.hour) * parseFloat(item.rate)).toString(),
-                }
-              : itemsArrayItem;
-          })
-        );
-      }
-      total = total + parseFloat(item.amount ?? "0");
-    });
-    setInvoice({ ...invoice, total: total });
-  }, [items]);
+  useEffect(
+    () => {
+      let total = 0;
+      let tempItems: Items = [];
+      items.map((item, index, itemsArray) => {
+        console.log("check1", index);
+        isInvoiceHour &&
+          tempItems.push({
+            ...item,
+            amount: (parseFloat(item.hours) * parseFloat(item.rate)).toString(),
+          });
+        setItems(tempItems);
+        total = total + parseFloat(item.amount ?? "0");
+      });
+      setInvoice({ ...invoice, total: total });
+    },
+    items.map((item, index) => {
+      return item?.hour, item?.rate;
+    })
+  );
   const styles = StyleSheet.create({
     container: {
       gap: 15,
@@ -99,7 +100,7 @@ export default function EditScreen() {
           label="Invoice Date"
           inputMode="start"
           value={invoice.invoiceDate}
-          onChange={(value) => setInvoice({ ...invoice, invoiceDate: value })}
+          onChange={(value) => setInvoice({ ...invoice, invoiceDate: value ?? undefined })}
           mode="flat"
         />
         {/* <Input label="Invoice Date" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceDate" /> */}
@@ -243,7 +244,7 @@ export default function EditScreen() {
             dense={true}
             style={{ flex: 1 }}
             inputMode="numeric"
-            onChangeText={(value) => isDecimal(value) && setInvoice({ ...invoice, tax: value ?? 0 })}
+            onChangeText={(value) => isDecimal(value) && setInvoice({ ...invoice, tax: value ?? "" })}
             value={invoice.tax}
           />
         )}

@@ -5509,7 +5509,7 @@ export default function invoiceTemplate(invoice: IInvoice) {
                             font-family: 'Trebuchet MS';
                             text-align: right;
                         ">
-                        0.00%
+                        ${invoice.tax}%
                     </td>
                 </tr>
                 <tr>
@@ -7988,7 +7988,7 @@ export default function invoiceTemplate(invoice: IInvoice) {
                             font-family: 'Trebuchet MS';
                             text-align: right;
                         ">
-                        0.00%
+                        ${invoice.tax}%
                     </td>
                     <td
                         id="cell_H31"
