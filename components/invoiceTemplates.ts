@@ -1,7 +1,7 @@
 import { IInvoice } from "@/utils/types";
 
-export function invoice1(invoice: IInvoice) {
-  const template = `<html>
+export default function invoiceTemplate(invoice: IInvoice) {
+  const invoiceTemplate1 = `<html>
     <body>
         <table style="border-collapse: collapse; width: 629px">
             <colgroup>
@@ -1829,9 +1829,7 @@ export function invoice1(invoice: IInvoice) {
     </body>
 </html>
 `;
-}
-export function invoice2(invoice: IInvoice) {
-  const template = `<html>
+  const invoiceTemplate2 = `<html>
     <body>
         <table
             cellspacing="0"
@@ -3991,9 +3989,7 @@ export function invoice2(invoice: IInvoice) {
     </body>
 </html>
 `;
-}
-export function companyInvoice1(invoice: IInvoice) {
-  const template = `<html>
+  const companyInvoiceTemplate1 = `<html>
     <body>
         <table
             cellspacing="0"
@@ -5766,9 +5762,7 @@ export function companyInvoice1(invoice: IInvoice) {
     </body>
 </html>
 `;
-}
-export function companyInvoice2(invoice: IInvoice) {
-  const template = `<html>
+  const companyInvoiceTemplate2 = `<html>
     <body>
         <table
             cellspacing="0"
@@ -8418,4 +8412,14 @@ export function companyInvoice2(invoice: IInvoice) {
     </body>
 </html>
 `;
+  switch (invoice.invoiceType) {
+    case 0:
+      return invoiceTemplate1;
+    case 1:
+      return invoiceTemplate2;
+    case 2:
+      return companyInvoiceTemplate1;
+    case 3:
+      return companyInvoiceTemplate2;
+  }
 }

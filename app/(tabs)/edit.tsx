@@ -17,6 +17,7 @@ export default function EditScreen() {
   const mobile = width <= 768;
   const theme = useTheme();
   const isInvoiceHour = invoiceType === 1 || invoiceType === 3;
+  const isInvoiceTax = invoiceType === 2 || invoiceType === 3;
   const newItem = isInvoiceHour ? { description: "", hours: undefined, rate: undefined, amount: "" } : { description: "", amount: "" };
   const [items, setItems] = useState<Items>([{ ...newItem }]);
   const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
@@ -206,6 +207,17 @@ export default function EditScreen() {
           textColor={theme.colors.onSurfaceVariant}>
           Add Item
         </Button>
+        {isInvoiceTax && (
+          <TextInput
+            mode="flat"
+            label="Tax"
+            dense={true}
+            style={{ flex: 1 }}
+            inputMode="numeric"
+            onChangeText={(value) => isDecimal(value) && setInvoice({ ...invoice, tax: value ?? 0 })}
+            value={invoice.tax}
+          />
+        )}
       </View>
     </ScrollView>
   );
