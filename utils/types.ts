@@ -1,6 +1,6 @@
 export interface IInvoice {
   invoiceNumber?: string;
-  invoiceDate?: string;
+  invoiceDate?: Date;
   invoiceTitle?: string;
   billToName?: string;
   billToAddressLine1?: string;

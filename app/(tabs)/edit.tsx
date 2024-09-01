@@ -1,17 +1,17 @@
 import { StyleSheet, ScrollView, View } from "react-native";
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent, Fragment, useState } from "react";
 import { IInvoice, Items } from "@/utils/types";
 import { Input } from "@/components/inputs/Input";
-import { Button, IconButton, Text, TextInput, useTheme } from "react-native-paper";
+import { Button, Divider, IconButton, Text, TextInput, useTheme } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
-
+import { DatePickerInput } from "react-native-paper-dates";
 export default function EditScreen() {
   const invoiceType = parseInt(useLocalSearchParams().invoiceType as string);
   const theme = useTheme();
   const [items, setItems] = useState<Items>([{ description: "", amount: "" }]);
   const [invoice, setInvoice] = useState<IInvoice>({
     invoiceNumber: "",
-    invoiceDate: "",
+    invoiceDate: undefined,
     invoiceTitle: "",
     billToName: "",
     billToAddressLine1: "",
@@ -52,7 +52,15 @@ export default function EditScreen() {
     <ScrollView>
       <View style={styles.container}>
         <Input label="Invoice Number" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceNumber" />
-        <Input label="Invoice Date" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceDate" />
+        <DatePickerInput
+          locale="en"
+          label="Invoice Date"
+          inputMode="start"
+          value={invoice.invoiceDate}
+          onChange={(value) => setInvoice({ ...invoice, invoiceDate: value })}
+          mode="flat"
+        />
+        {/* <Input label="Invoice Date" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceDate" /> */}
         <Input label="Invoice Title" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceTitle" />
         <View style={styles.addressContainer}>
           <View style={styles.address}>
@@ -79,6 +87,7 @@ export default function EditScreen() {
                 mode="flat"
                 label="Description"
                 dense={true}
+                style={{ flex: 1 }}
                 onChangeText={(value) =>
                   setItems(
                     itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
@@ -91,6 +100,7 @@ export default function EditScreen() {
                 mode="flat"
                 label="Amount"
                 dense={true}
+                style={{ flex: 1 }}
                 inputMode="numeric"
                 onChangeText={(value) =>
                   /^\d*(\.\d*)?$/.test(value) &&
@@ -116,91 +126,15 @@ export default function EditScreen() {
             </View>
           );
         })}
-        <IconButton onPress={(e) => setItems([...items, { description: "", amount: "" }])} icon="plus" iconColor={theme.colors.secondary} />
+        <Button
+          onPress={(e) => setItems([...items, { description: "", amount: "" }])}
+          mode="contained-tonal"
+          icon="plus"
+          buttonColor={theme.colors.surfaceVariant}
+          textColor={theme.colors.onSurfaceVariant}>
+          Add Item
+        </Button>
       </View>
-      {/* <TextField placeholder="Invoice Number" {...inputProps} value={invoice.invoiceNumber} />
-      <DateTimePicker placeholder="Invoice Date" {...inputProps} value={invoice.invoiceDate} />
-      <TextField
-        placeholder="Invoice Title"
-        floatOnFocus
-        floatingPlaceholder
-        fieldStyle={styles.textInput}
-        floatingPlaceholderStyle={styles.placeholder}
-        showClearButton
-      />
-      <View style={styles.addressContainer}>
-        <View style={styles.address}>
-          <Text style={styles.heading}>Bill To</Text>
-          <TextField
-            placeholder="Name"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-          <TextField
-            placeholder="Address Line 1"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-          <TextField
-            placeholder="Address Line 2"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-          <TextField
-            placeholder="Phone"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-        </View>
-        <View style={styles.address}>
-          <Text style={styles.heading}>From</Text>
-          <TextField
-            placeholder="Name"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-          <TextField
-            placeholder="Address Line 1"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-          <TextField
-            placeholder="Address Line 2"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-          <TextField
-            placeholder="Phone"
-            floatOnFocus
-            floatingPlaceholder
-            fieldStyle={styles.textInput}
-            floatingPlaceholderStyle={styles.placeholder}
-            showClearButton
-          />
-        </View>
-      </View>
-      <Text style={styles.heading}>Items</Text> */}
     </ScrollView>
   );
 }

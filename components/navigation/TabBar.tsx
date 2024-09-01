@@ -1,14 +1,10 @@
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Fragment } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Button, IconButton } from "react-native-paper";
-
-const colorScheme = useColorScheme();
-const Color = colorScheme === "dark" ? Colors.dark : Colors.light;
+import { IconButton, useTheme } from "react-native-paper";
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const theme = useTheme();
   return (
     <View style={styles.tabBar}>
       {state.routes.map((route, index) => {
@@ -48,6 +44,8 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 onPress={onPress}
                 onLongPress={onLongPress}
                 mode="contained"
+                iconColor={theme.colors.onSecondary}
+                containerColor={theme.colors.secondary}
                 icon={options.title === "index" ? "file-eye-outline" : options.title === "edit" ? "pencil-outline" : ""}
               />
             )}

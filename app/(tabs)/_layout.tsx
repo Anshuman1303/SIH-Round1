@@ -1,14 +1,15 @@
 import { router, Tabs } from "expo-router";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 
 import { StyleSheet, Text, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
+import { Button, Divider, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
 import useRender from "@/hooks/useRender";
+import { en, registerTranslation } from "react-native-paper-dates";
 
 const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
-
+registerTranslation("en", en);
 export default function TabLayout() {
   const theme = useTheme();
   const styles = StyleSheet.create({
@@ -69,17 +70,20 @@ export default function TabLayout() {
             mode="elevated"
             onDismiss={() => setSettingsMenuVisible(false)}
             anchorPosition="bottom"
+            contentStyle={{ padding: 0 }}
             anchor={<IconButton mode="contained-tonal" icon="cog" onPress={() => setSettingsMenuVisible(!settingsMenuVisible)} />}>
             {invoiceTypes.map((invoiceType, index) => {
               return (
-                <Menu.Item
-                  key={index}
-                  title={invoiceType}
-                  onPress={() => {
-                    setInvoiceType(index);
-                    setSettingsMenuVisible(false);
-                  }}
-                />
+                <Fragment key={index}>
+                  {index !== 0 && <Divider />}
+                  <Menu.Item
+                    title={invoiceType}
+                    onPress={() => {
+                      setInvoiceType(index);
+                      setSettingsMenuVisible(false);
+                    }}
+                  />
+                </Fragment>
               );
             })}
           </Menu>
