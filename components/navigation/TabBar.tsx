@@ -48,7 +48,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 onPress={onPress}
                 onLongPress={onLongPress}
                 mode="contained"
-                icon={options.title === "home" ? "file-edit" : options.title === "edit" ? "file-eye" : ""}
+                icon={options.title === "index" ? "file-eye-outline" : options.title === "edit" ? "pencil-outline" : ""}
               />
             )}
           </Fragment>

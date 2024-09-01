@@ -104,7 +104,6 @@ export default function RootLayout() {
             backdrop: "rgba(45, 49, 56, 0.4)",
           },
   };
-  console.log(theme);
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });

@@ -1,17 +1,13 @@
-import { Tabs } from "expo-router";
-import React from "react";
+import { router, Tabs } from "expo-router";
+import React, { useState } from "react";
 
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { StyleSheet, Text, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Modal, TextField } from "react-native-ui-lib";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, IconButton, useTheme } from "react-native-paper";
+import { Button, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
+import useRender from "@/hooks/useRender";
 
-const colorScheme = useColorScheme();
-const Color = colorScheme === "dark" ? Colors.dark : Colors.light;
+const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -35,22 +31,58 @@ export default function TabLayout() {
     },
     authModal: {
       display: "flex",
-      padding: 20,
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
+      width: "80%",
       gap: 20,
-      height: "100%",
+      padding: 40,
+      backgroundColor: theme.colors.background,
+      margin: "auto",
+      borderRadius: 20,
+    },
+    authModalButtonGroup: {
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+      gap: 20,
+    },
+    authModalButton: {
+      flex: 1,
     },
   });
+
+  const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
+  const [authModalVisible, setAuthModalVisible] = useState(false);
+  const [invoiceType, setInvoiceType] = useState(0);
+  const [authData, setAuthData] = useState({ username: "", password: "" });
+  useRender(() => {
+    router.setParams({ invoiceType: invoiceType });
+  }, [invoiceType]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Button icon="account" mode="contained">
+        <Button icon="account" mode="elevated" onPress={() => setAuthModalVisible(true)}>
           Login
         </Button>
         <View style={styles.buttonGroup}>
-          <IconButton mode="contained-tonal" icon="cog" />
+          <Menu
+            visible={settingsMenuVisible}
+            mode="elevated"
+            onDismiss={() => setSettingsMenuVisible(false)}
+            anchorPosition="bottom"
+            anchor={<IconButton mode="contained-tonal" icon="cog" onPress={() => setSettingsMenuVisible(!settingsMenuVisible)} />}>
+            {invoiceTypes.map((invoiceType, index) => {
+              return (
+                <Menu.Item
+                  key={index}
+                  title={invoiceType}
+                  onPress={() => {
+                    setInvoiceType(index);
+                    setSettingsMenuVisible(false);
+                  }}
+                />
+              );
+            })}
+          </Menu>
           <IconButton mode="contained-tonal" icon="folder" />
           <IconButton mode="contained-tonal" icon="cloud-download" />
           <IconButton mode="contained-tonal" icon="file-plus" />
@@ -60,22 +92,51 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "home",
+            title: "index",
           }}
+          initialParams={{ invoiceType: invoiceType }}
         />
         <Tabs.Screen
           name="edit"
           options={{
             title: "edit",
           }}
+          initialParams={{ invoiceType: invoiceType }}
         />
       </Tabs>
-      <Modal visible={false}>
-        <View style={styles.authModal}>
-          <TextField placeholder="Username" floatOnFocus floatingPlaceholder showClearButton />
-          <TextField placeholder="Password" floatOnFocus floatingPlaceholder showClearButton />
-        </View>
-      </Modal>
+      <Portal>
+        <Modal
+          visible={authModalVisible}
+          contentContainerStyle={styles.authModal}
+          onDismiss={() => {
+            setAuthModalVisible(false);
+          }}>
+          <TextInput
+            label="Username"
+            value={authData.username}
+            mode="outlined"
+            onChangeText={(value) => {
+              setAuthData({ ...authData, username: value });
+            }}
+          />
+          <TextInput
+            label="Password"
+            value={authData.password}
+            mode="outlined"
+            onChangeText={(value) => {
+              setAuthData({ ...authData, password: value });
+            }}
+          />
+          <View style={styles.authModalButtonGroup}>
+            <Button mode="contained" style={styles.authModalButton}>
+              Login
+            </Button>
+            <Button mode="contained-tonal" style={styles.authModalButton}>
+              Sign Up
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
     </SafeAreaView>
   );
 }

@@ -13,6 +13,7 @@ export interface IInvoice {
   items?: Items;
   currency?: string;
   total?: number;
+  invoiceType: 0 | 1 | 2 | 3;
 }
 
 export type Items =
@@ -20,11 +21,11 @@ export type Items =
       description?: string;
       hours?: number;
       rate?: number;
-      amount?: number;
+      amount?: string;
     }[]
   | {
       description?: string;
-      amount?: number;
+      amount?: string;
     }[];
 
 export interface IInvoiceDocument extends IInvoice, Document {
