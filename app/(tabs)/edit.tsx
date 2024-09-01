@@ -6,6 +6,7 @@ import { Button, Divider, IconButton, Text, TextInput, useTheme } from "react-na
 import { useLocalSearchParams } from "expo-router";
 import { DatePickerInput } from "react-native-paper-dates";
 import { defaultInvoice, saveInvoiceLocally, loadInvoiceFromLocalStorage } from "@/utils/firestoreUtils";
+import { useInvoice } from "@/contexts/InvoiceContext";
 
 function isDecimal(value: string) {
   return /^\d*(\.\d*)?$/.test(value);
@@ -20,7 +21,8 @@ export default function EditScreen() {
   const isInvoiceTax = invoiceType === 2 || invoiceType === 3;
   const newItem = isInvoiceHour ? { description: "", hours: undefined, rate: undefined, amount: "" } : { description: "", amount: "" };
   const [items, setItems] = useState<Items>([{ ...newItem }]);
-  const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
+  // const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
+  const { invoice, setInvoice } = useInvoice();
   useEffect(() => {
     const loadData = async () => {
       const savedInvoice = await loadInvoiceFromLocalStorage();
@@ -100,9 +102,10 @@ export default function EditScreen() {
           locale="en"
           label="Invoice Date"
           inputMode="start"
-          value={invoice.invoiceDate}
-          onChange={(value) => setInvoice({ ...invoice, invoiceDate: value ?? undefined })}
+          value={invoice ? (invoice.invoiceDate?.toLocaleDateString ? invoice.invoiceDate : new Date("2000-01-01T00:00:00Z")) : new Date("2000-01-01T00:00:00Z")}
+          onChange={(value) => setInvoice({ ...invoice, invoiceDate: value ?? "2000-01-01T00:00:00Z" } as IInvoice)}
           mode="flat"
+        // dateFormat="MM-dd-yyyy"
         />
         {/* <Input label="Invoice Date" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceDate" /> */}
         <Input label="Invoice Title" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceTitle" />
@@ -137,9 +140,9 @@ export default function EditScreen() {
                     itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                       return itemsArrayIndex === index
                         ? {
-                            ...itemsArrayItem,
-                            description: value,
-                          }
+                          ...itemsArrayItem,
+                          description: value,
+                        }
                         : itemsArrayItem;
                     })
                   )
@@ -160,9 +163,9 @@ export default function EditScreen() {
                         itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                           return itemsArrayIndex === index
                             ? {
-                                ...itemsArrayItem,
-                                hours: value ?? "",
-                              }
+                              ...itemsArrayItem,
+                              hours: value ?? "",
+                            }
                             : itemsArrayItem;
                         })
                       )
@@ -181,9 +184,9 @@ export default function EditScreen() {
                         itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                           return itemsArrayIndex === index
                             ? {
-                                ...itemsArrayItem,
-                                rate: value ?? "",
-                              }
+                              ...itemsArrayItem,
+                              rate: value ?? "",
+                            }
                             : itemsArrayItem;
                         })
                       )
@@ -205,9 +208,9 @@ export default function EditScreen() {
                       itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                         return itemsArrayIndex === index
                           ? {
-                              ...itemsArrayItem,
-                              amount: value ?? "",
-                            }
+                            ...itemsArrayItem,
+                            amount: value ?? "",
+                          }
                           : itemsArrayItem;
                       })
                     )
@@ -245,8 +248,8 @@ export default function EditScreen() {
             dense={true}
             style={{ flex: 1 }}
             inputMode="numeric"
-            onChangeText={(value) => isDecimal(value) && setInvoice({ ...invoice, tax: value ?? "" })}
-            value={invoice.tax}
+            onChangeText={(value) => isDecimal(value) && setInvoice({ ...invoice, tax: value ?? "" } as IInvoice)}
+            value={invoice?.tax}
           />
         )}
       </View>
