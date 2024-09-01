@@ -123,7 +123,7 @@ export default function TabLayout() {
       setInvoiceList(await fetchInvoiceDocuments(user?.uid as string));
     }
     fetch();
-  }, [user]);
+  }, [user, invoiceListModalVisible]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
