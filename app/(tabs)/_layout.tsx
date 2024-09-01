@@ -61,6 +61,7 @@ export default function TabLayout() {
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
   const [fileMenuVisible, setFileMenuVisible] = useState(false);
   const [authModalVisible, setAuthModalVisible] = useState(false);
+  const [invoiceListModalVisible, setInvoiceListModalVisible] = useState(false);
   const [invoiceType, setInvoiceType] = useState(0);
   const [authData, setAuthData] = useState({ username: "", password: "" });
   const { user, setUser } = useUser();
@@ -137,7 +138,7 @@ export default function TabLayout() {
               })}
             </Menu>
           )}
-          <IconButton mode="contained-tonal" icon="folder" />
+          <IconButton mode="contained-tonal" icon="folder" onPress={() => setInvoiceListModalVisible(true)} />
           <IconButton mode="contained-tonal" icon="cloud-download" />
           <IconButton mode="contained-tonal" icon="file-plus" />
         </View>
@@ -220,7 +221,12 @@ export default function TabLayout() {
         </Modal>
       </Portal>
       <Portal>
-        <Modal visible={false}>
+        <Modal
+          visible={invoiceListModalVisible}
+          contentContainerStyle={styles.authModal}
+          onDismiss={() => {
+            setInvoiceListModalVisible(false);
+          }}>
           <View></View>
         </Modal>
       </Portal>
