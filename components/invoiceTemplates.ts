@@ -5572,7 +5572,7 @@ export default function invoiceTemplate(invoice: IInvoice) {
                             font-family: 'Trebuchet MS';
                             text-align: right;
                         ">
-                        0.00
+                        ${invoice.total * (isNaN(parseFloat(invoice.tax)) ? 0 : parseFloat(invoice.tax) / 100)}
                     </td>
                 </tr>
                 
@@ -5638,7 +5638,7 @@ export default function invoiceTemplate(invoice: IInvoice) {
                             text-align: right;
                             border-top: 1px solid rgb(0, 0, 0);
                         ">
-                        ${invoice.total}
+                        ${invoice.total * (1 + (isNaN(parseFloat(invoice.tax)) ? 0 : parseFloat(invoice.tax) / 100))}
                     </td>
                 </tr>
                 <tr>
@@ -8084,7 +8084,7 @@ export default function invoiceTemplate(invoice: IInvoice) {
                             font-family: 'Trebuchet MS';
                             text-align: right;
                         ">
-                        0.00
+                        ${invoice.total * (isNaN(parseFloat(invoice.tax)) ? 0 : parseFloat(invoice.tax) / 100)}
                     </td>
                     <td
                         id="cell_H32"
@@ -8183,7 +8183,7 @@ export default function invoiceTemplate(invoice: IInvoice) {
                             text-align: right;
                             border-top: 1px solid rgb(0, 0, 0);
                         ">
-                        ${invoice.total}
+                        ${invoice.total * (1 + (isNaN(parseFloat(invoice.tax)) ? 0 : parseFloat(invoice.tax) / 100))}
                     </td>
                     <td
                         id="cell_H34"

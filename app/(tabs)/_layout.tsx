@@ -1,5 +1,5 @@
-import { router, Tabs, usePathname, useRouter } from "expo-router";
-import React, { Fragment, useEffect, useState } from "react";
+import { router, Tabs, useFocusEffect, usePathname } from "expo-router";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -91,15 +91,19 @@ export default function TabLayout() {
 
   // const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
   const { invoice, setInvoice } = useInvoice();
-  useEffect(() => {
-    const loadData = async () => {
-      const savedInvoice = await loadInvoiceFromLocalStorage();
-      if (savedInvoice) {
-        setInvoice(savedInvoice);
-      }
-    };
-    loadData();
-  }, [fileMenuVisible]);
+  useFocusEffect(
+    useCallback(() => {
+      const loadData = async () => {
+        const savedInvoice = await loadInvoiceFromLocalStorage();
+        if (savedInvoice) {
+          setInvoice(savedInvoice);
+          console.log("Invoice loaded from local storage");
+        }
+      };
+      loadData();
+    }, [])
+  );
+
   const html = invoiceTemplate(invoice);
   const [selectedPrinter, setSelectedPrinter] = useState();
 
@@ -322,7 +326,7 @@ export default function TabLayout() {
               label: "print",
               onPress: (e) => {
                 setFileMenuVisible(false);
-                Platform.OS === "web" ? setTimeout(print, 200) : printToFile();
+                Platform.OS === "web" ? setTimeout(print, 200) : print();
               },
             },
             {
