@@ -29,7 +29,7 @@ export const storeIInvoiceDocument = async (userId: string, invoice: IInvoiceDoc
   }
 };
 
-const fetchInvoiceDocuments = async (userId: string): Promise<IInvoiceDocument[]> => {
+export const fetchInvoiceDocuments = async (userId: string): Promise<IInvoiceDocument[]> => {
   try {
     if (userId) {
       const userCollectionRef = collection(db, "users", userId, "IInvoiceDocument");

@@ -3,14 +3,14 @@ import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Divider, FAB, IconButton, Menu, Modal, Portal, TextInput, useTheme } from "react-native-paper";
+import { Button, Divider, FAB, IconButton, Menu, Modal, Portal, Text, TextInput, useTheme } from "react-native-paper";
 import useRender from "@/hooks/useRender";
 import { en, registerTranslation } from "react-native-paper-dates";
 import { signInUser, signUpUser } from "@/utils/authenticationUtils";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "@/contexts/UserContext";
-import { defaultInvoice, loadInvoiceFromLocalStorage, storeIInvoiceDocument } from "@/utils/firestoreUtils";
+import { defaultInvoice, fetchInvoiceDocuments, loadInvoiceFromLocalStorage, storeIInvoiceDocument } from "@/utils/firestoreUtils";
 import { IInvoice, IInvoiceDocument } from "@/utils/types";
 import invoiceTemplate from "@/components/invoiceTemplates";
 import * as Print from "expo-print";
@@ -56,6 +56,16 @@ export default function TabLayout() {
     authModalButton: {
       flex: 1,
     },
+    invoiceListItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+      justifyContent: "space-between",
+      backgroundColor: theme.colors.surfaceVariant,
+      paddingHorizontal: 20,
+      gap: 20,
+      borderRadius: 10,
+    },
   });
 
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
@@ -64,6 +74,7 @@ export default function TabLayout() {
   const [invoiceListModalVisible, setInvoiceListModalVisible] = useState(false);
   const [invoiceType, setInvoiceType] = useState(0);
   const [authData, setAuthData] = useState({ username: "", password: "" });
+  const [invoiceList, setInvoiceList] = useState<IInvoiceDocument[]>([]);
   const { user, setUser } = useUser();
 
   useRender(() => {
@@ -107,6 +118,12 @@ export default function TabLayout() {
     }
   };
   const pathname = usePathname();
+  useEffect(() => {
+    async function fetch() {
+      setInvoiceList(await fetchInvoiceDocuments(user?.uid as string));
+    }
+    fetch();
+  }, [user]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -227,7 +244,16 @@ export default function TabLayout() {
           onDismiss={() => {
             setInvoiceListModalVisible(false);
           }}>
-          <View></View>
+          {invoiceList.map((invoiceDoc, index) => {
+            return (
+              <View style={styles.invoiceListItem}>
+                <Text variant="headlineMedium">
+                  {invoiceDoc.invoiceTitle} #{invoiceDoc.invoiceNumber}
+                </Text>
+                <IconButton icon="delete" iconColor={theme.colors.error} mode="contained" onPress={() => {}} />
+              </View>
+            );
+          })}
         </Modal>
       </Portal>
       <Portal>
