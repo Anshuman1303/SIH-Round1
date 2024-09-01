@@ -19,17 +19,21 @@ export interface IInvoice {
 
 export type Items =
   | {
-      description?: string;
-      hours?: number;
-      rate?: number;
-      amount?: string;
-    }[]
+    description?: string;
+    hours?: number;
+    rate?: number;
+    amount?: string;
+  }[]
   | {
-      description?: string;
-      amount?: string;
-    }[];
+    description?: string;
+    amount?: string;
+  }[];
 
 export interface IInvoiceDocument extends IInvoice, Document {
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IInvoiceDocumentWithId extends IInvoiceDocument {
+  id: string,
 }

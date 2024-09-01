@@ -10,8 +10,8 @@ import { signInUser, signUpUser } from "@/utils/authenticationUtils";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
 import { useUser } from "@/contexts/UserContext";
-import { defaultInvoice, fetchInvoiceDocuments, loadInvoiceFromLocalStorage, storeIInvoiceDocument } from "@/utils/firestoreUtils";
-import { IInvoice, IInvoiceDocument } from "@/utils/types";
+import { defaultInvoice, fetchInvoiceDocuments, loadInvoiceFromLocalStorage, storeIInvoiceDocument, deleteInvoiceDocument } from "@/utils/firestoreUtils";
+import { IInvoice, IInvoiceDocument, IInvoiceDocumentWithId } from "@/utils/types";
 import invoiceTemplate from "@/components/invoiceTemplates";
 import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
@@ -74,7 +74,7 @@ export default function TabLayout() {
   const [invoiceListModalVisible, setInvoiceListModalVisible] = useState(false);
   const [invoiceType, setInvoiceType] = useState(0);
   const [authData, setAuthData] = useState({ username: "", password: "" });
-  const [invoiceList, setInvoiceList] = useState<IInvoiceDocument[]>([]);
+  const [invoiceList, setInvoiceList] = useState<IInvoiceDocumentWithId[]>([]);
   const { user, setUser } = useUser();
 
   useRender(() => {
@@ -252,7 +252,17 @@ export default function TabLayout() {
                 <Text variant="headlineMedium">
                   {invoiceDoc.invoiceTitle} #{invoiceDoc.invoiceNumber}
                 </Text>
-                <IconButton icon="delete" iconColor={theme.colors.error} mode="contained" onPress={() => {}} />
+                <IconButton icon="delete" iconColor={theme.colors.error} mode="contained" onPress={() => {
+                  const deleteInvoice = async () => {
+                    if (!user) {
+                      console.error("No user is logged in");
+                      return;
+                    }
+                    await deleteInvoiceDocument(user.uid, invoiceDoc.id);
+                    setInvoiceList(await fetchInvoiceDocuments(user.uid));
+                  }
+                  deleteInvoice();
+                }} />
               </View>
             );
           })}
@@ -286,7 +296,7 @@ export default function TabLayout() {
                 save();
               },
             },
-            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
+            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => { } },
             {
               icon: "printer",
               label: "print",
