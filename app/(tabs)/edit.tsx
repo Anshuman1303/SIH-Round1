@@ -26,6 +26,7 @@ export default function EditScreen() {
       const savedInvoice = await loadInvoiceFromLocalStorage();
       if (savedInvoice) {
         setInvoice(savedInvoice);
+        setItems(savedInvoice.items);
         console.log("Invoice loaded from local storage");
       }
     };
@@ -34,12 +35,13 @@ export default function EditScreen() {
   useEffect(() => {
     const saveData = async () => {
       if (invoice) {
+        invoice.items = items;
         await saveInvoiceLocally(invoice);
         console.log("Invoice saved locally");
       }
     };
     saveData();
-  }, [invoice]);
+  }, [invoice, items]);
   const styles = StyleSheet.create({
     container: {
       gap: 15,
