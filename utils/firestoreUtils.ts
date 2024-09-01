@@ -1,7 +1,25 @@
 import { db, auth } from '../firebaseConfig';
 import { collection, addDoc, query, getDocs } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IInvoiceDocument } from './types';
+import { IInvoice, IInvoiceDocument } from './types';
+
+export const defaultInvoice: IInvoice = {
+	invoiceNumber: "",
+	invoiceDate: undefined,
+	invoiceTitle: "",
+	billToName: "",
+	billToAddressLine1: "",
+	billToAddressLine2: "",
+	billToPhone: "",
+	fromName: "",
+	fromAddressLine1: "",
+	fromAddressLine2: "",
+	fromPhone: "",
+	items: { description: "", amount: "" },
+	currency: "",
+	total: 0,
+	invoiceType: 2,
+  }
 export const storeIInvoiceDocument = async (userId: string, invoice: IInvoiceDocument) => {
 	try {
 		await addDoc(collection(db, 'users', userId, 'IInvoiceDocument'), invoice);
@@ -65,5 +83,33 @@ const getInvoiceDocumentsFromLocalStorage = async (): Promise<IInvoiceDocument[]
 	} catch (e) {
 	  console.error('Error fetching invoices from Firebase', e);
 	  return getInvoicesFromLocalStorage();
+	}
+  };
+
+export const saveInvoiceLocally = async (invoice: IInvoice) => {
+    try {
+      /* const baseDocument = new Document();
+      const invoiceDocument: IInvoiceDocument = {
+        ...baseDocument,
+        ...invoice,
+		createdAt: new Date(),
+		updatedAt: new Date(),
+      }
+      const jsonInvoiceDocument = JSON.stringify(invoiceDocument);
+      await AsyncStorage.setItem("@invoiceDocuments_local", jsonInvoiceDocument); */
+	  const jsonInvoice = JSON.stringify(invoice);
+	  await AsyncStorage.setItem('@invoice_local', jsonInvoice);
+    } catch (error) {
+      console.error("Error saving invoice locally", error);
+    }
+  }
+
+export const loadInvoiceFromLocalStorage = async (): Promise<IInvoice> => {
+	try {
+	  const jsonValue = await AsyncStorage.getItem("@invoice_local");
+	  return jsonValue != null ? JSON.parse(jsonValue) : defaultInvoice;
+	} catch (e) {
+	  console.error('Error loading invoice from local storage', e);
+	  return defaultInvoice;
 	}
   };

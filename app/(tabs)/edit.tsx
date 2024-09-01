@@ -5,6 +5,7 @@ import { Input } from "@/components/inputs/Input";
 import { Button, Divider, IconButton, Text, TextInput, useTheme } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { DatePickerInput } from "react-native-paper-dates";
+import { defaultInvoice, saveInvoiceLocally, loadInvoiceFromLocalStorage } from "@/utils/firestoreUtils";
 
 function isDecimal(value: string) {
   return /^\d*(\.\d*)?$/.test(value);
@@ -18,23 +19,26 @@ export default function EditScreen() {
   const isInvoiceHour = invoiceType === 1 || invoiceType === 3;
   const newItem = isInvoiceHour ? { description: "", hours: undefined, rate: undefined, amount: "" } : { description: "", amount: "" };
   const [items, setItems] = useState<Items>([{ ...newItem }]);
-  const [invoice, setInvoice] = useState<IInvoice>({
-    invoiceNumber: "",
-    invoiceDate: undefined,
-    invoiceTitle: "",
-    billToName: "",
-    billToAddressLine1: "",
-    billToAddressLine2: "",
-    billToPhone: "",
-    fromName: "",
-    fromAddressLine1: "",
-    fromAddressLine2: "",
-    fromPhone: "",
-    items: items,
-    currency: "",
-    total: 0,
-    invoiceType: invoiceType as 0 | 1 | 2 | 3,
-  });
+  const [invoice, setInvoice] = useState<IInvoice>(defaultInvoice);
+useEffect(() => {
+	const loadData = async () => {
+		const savedInvoice = await loadInvoiceFromLocalStorage();
+		if (savedInvoice) {
+			setInvoice(savedInvoice);
+			console.log("Invoice loaded from local storage");
+		}
+	};
+	loadData();
+}, []);
+useEffect(() => {
+	const saveData = async () => {
+		if (invoice) {
+			await saveInvoiceLocally(invoice);
+			console.log("Invoice saved locally");
+		}
+	};
+	saveData();
+}, [invoice]);
   const styles = StyleSheet.create({
     container: {
       gap: 15,
