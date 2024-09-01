@@ -21,7 +21,7 @@ export default function TabTwoScreen() {
   // return <RenderHTML source={source} />;
   return (
     <ScrollView>
-      <RenderHTML source={{ html: invoiceTemplate(invoice) }} contentWidth={768} />
+      <RenderHTML source={{ html: invoiceTemplate(invoice) }} />
     </ScrollView>
   );
 }
