@@ -22,7 +22,7 @@ import { IInvoice, IInvoiceDocument, IInvoiceDocumentWithId } from "@/utils/type
 import invoiceTemplate from "@/components/invoiceTemplates";
 import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
-import { useInvoice } from '@/contexts/InvoiceContext';
+import { useInvoice } from "@/contexts/InvoiceContext";
 
 const invoiceTypes = ["Invoice 1", "Invoice 2", "Company Invoice 1", "Company Invoice 2"];
 registerTranslation("en", en);
@@ -112,11 +112,6 @@ export default function TabLayout() {
       html: html,
       printerUrl: selectedPrinter?.url,
     });
-  };
-
-  const selectPrinter = async () => {
-    const printer = await Print.selectPrinterAsync();
-    setSelectedPrinter(printer);
   };
 
   const printToFile = async () => {
@@ -260,15 +255,17 @@ export default function TabLayout() {
           {invoiceList.map((invoiceDoc, index) => {
             return (
               <View style={styles.invoiceListItem} key={index}>
-                <Text variant="headlineMedium" onPress={() => {
-                  const loadInvoice = async () => {
-                    setInvoiceListModalVisible(false);
-                    // await saveInvoiceLocally(invoiceDoc);
-                    // console.log(invoiceDoc);
-                    setInvoice(invoiceDoc);
-                  }
-                  loadInvoice();
-                }}>
+                <Text
+                  variant="headlineMedium"
+                  onPress={() => {
+                    const loadInvoice = async () => {
+                      setInvoiceListModalVisible(false);
+                      // await saveInvoiceLocally(invoiceDoc);
+                      // console.log(invoiceDoc);
+                      setInvoice(invoiceDoc);
+                    };
+                    loadInvoice();
+                  }}>
                   {invoiceDoc.invoiceTitle} #{invoiceDoc.invoiceNumber}
                 </Text>
                 <IconButton
@@ -320,7 +317,7 @@ export default function TabLayout() {
                 save();
               },
             },
-            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => { } },
+            { icon: "content-save-edit-outline", label: "Save As", onPress: (e) => {} },
             {
               icon: "printer",
               label: "print",

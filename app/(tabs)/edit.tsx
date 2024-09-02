@@ -64,7 +64,7 @@ export default function EditScreen() {
       setItems(tempItems);
     }
   }, [...items.map((item, index) => (item?.hour, item?.rate)), items.length]);
-  console.log(invoice);
+
   useEffect(() => {
     let total = 0;
     items.forEach((item) => {
@@ -102,10 +102,16 @@ export default function EditScreen() {
           locale="en"
           label="Invoice Date"
           inputMode="start"
-          value={invoice ? (invoice.invoiceDate?.toLocaleDateString ? invoice.invoiceDate : new Date("2000-01-01T00:00:00Z")) : new Date("2000-01-01T00:00:00Z")}
+          value={
+            invoice
+              ? invoice.invoiceDate?.toLocaleDateString
+                ? invoice.invoiceDate
+                : new Date("2000-01-01T00:00:00Z")
+              : new Date("2000-01-01T00:00:00Z")
+          }
           onChange={(value) => setInvoice({ ...invoice, invoiceDate: value ?? "2000-01-01T00:00:00Z" } as IInvoice)}
           mode="flat"
-        // dateFormat="MM-dd-yyyy"
+          // dateFormat="MM-dd-yyyy"
         />
         {/* <Input label="Invoice Date" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceDate" /> */}
         <Input label="Invoice Title" invoice={invoice} setInvoice={setInvoice} dataKey="invoiceTitle" />
@@ -140,9 +146,9 @@ export default function EditScreen() {
                     itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                       return itemsArrayIndex === index
                         ? {
-                          ...itemsArrayItem,
-                          description: value,
-                        }
+                            ...itemsArrayItem,
+                            description: value,
+                          }
                         : itemsArrayItem;
                     })
                   )
@@ -163,9 +169,9 @@ export default function EditScreen() {
                         itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                           return itemsArrayIndex === index
                             ? {
-                              ...itemsArrayItem,
-                              hours: value ?? "",
-                            }
+                                ...itemsArrayItem,
+                                hours: value ?? "",
+                              }
                             : itemsArrayItem;
                         })
                       )
@@ -184,9 +190,9 @@ export default function EditScreen() {
                         itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                           return itemsArrayIndex === index
                             ? {
-                              ...itemsArrayItem,
-                              rate: value ?? "",
-                            }
+                                ...itemsArrayItem,
+                                rate: value ?? "",
+                              }
                             : itemsArrayItem;
                         })
                       )
@@ -208,9 +214,9 @@ export default function EditScreen() {
                       itemsArray.map((itemsArrayItem, itemsArrayIndex) => {
                         return itemsArrayIndex === index
                           ? {
-                            ...itemsArrayItem,
-                            amount: value ?? "",
-                          }
+                              ...itemsArrayItem,
+                              amount: value ?? "",
+                            }
                           : itemsArrayItem;
                       })
                     )

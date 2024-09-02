@@ -18,7 +18,7 @@ export const defaultInvoice: IInvoice = {
   items: [{ description: "", amount: "" }],
   currency: "",
   total: 0,
-  invoiceType: 2,
+  invoiceType: 0,
   tax: "",
 };
 export const storeIInvoiceDocument = async (userId: string, invoice: IInvoiceDocument) => {
@@ -90,11 +90,11 @@ export const loadInvoiceDocuments = async (userId) => {
       return [];
     }
     const invoiceDocuments = await fetchInvoiceDocuments(userId);
-    await storeInvoicesInLocalStorage(invoiceDocuments);
+    await storeInvoiceDocumentsInLocalStorage(invoiceDocuments);
     return invoiceDocuments;
   } catch (e) {
     console.error("Error fetching invoices from Firebase", e);
-    return getInvoicesFromLocalStorage();
+    return getInvoiceDocumentsFromLocalStorage();
   }
 };
 
