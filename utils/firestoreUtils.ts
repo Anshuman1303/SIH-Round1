@@ -2,25 +2,9 @@ import { db, auth } from "../firebaseConfig";
 import { collection, addDoc, query, getDocs, doc, deleteDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IInvoice, IInvoiceDocument, IInvoiceDocumentWithId } from "./types";
+import { DATA } from "@/constants/app-data";
 
-export const defaultInvoice: IInvoice = {
-  invoiceNumber: "",
-  invoiceDate: undefined,
-  invoiceTitle: "",
-  billToName: "",
-  billToAddressLine1: "",
-  billToAddressLine2: "",
-  billToPhone: "",
-  fromName: "",
-  fromAddressLine1: "",
-  fromAddressLine2: "",
-  fromPhone: "",
-  items: [{ description: "", amount: "" }],
-  currency: "",
-  total: 0,
-  invoiceType: 0,
-  tax: "",
-};
+export const defaultInvoice: any = DATA["home"]["default"]["msc"];
 export const storeIInvoiceDocument = async (userId: string, invoice: IInvoiceDocument) => {
   try {
     await addDoc(collection(db, "users", userId, "IInvoiceDocument"), invoice);
@@ -83,7 +67,7 @@ const getInvoiceDocumentsFromLocalStorage = async (): Promise<IInvoiceDocument[]
   }
 };
 
-export const loadInvoiceDocuments = async (userId) => {
+export const loadInvoiceDocuments = async (userId: string) => {
   try {
     if (!userId) {
       console.error("No user is logged in");
@@ -98,7 +82,7 @@ export const loadInvoiceDocuments = async (userId) => {
   }
 };
 
-export const saveInvoiceLocally = async (invoice: IInvoice) => {
+export const saveInvoiceLocally = async (invoice: any) => {
   try {
     /* const baseDocument = new Document();
       const invoiceDocument: IInvoiceDocument = {
@@ -116,9 +100,10 @@ export const saveInvoiceLocally = async (invoice: IInvoice) => {
   }
 };
 
-export const loadInvoiceFromLocalStorage = async (): Promise<IInvoice> => {
+export const loadInvoiceFromLocalStorage = async (): Promise<any> => {
   try {
     const jsonValue = await AsyncStorage.getItem("@invoice_local");
+    console.log("CHECK", jsonValue);
     return jsonValue != null ? JSON.parse(jsonValue) : defaultInvoice;
   } catch (e) {
     console.error("Error loading invoice from local storage", e);
